@@ -703,6 +703,143 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
 .cta-band__title em { font-style: italic; color: var(--gold-bright); }
 .cta-band__sub { color: var(--muted); margin-bottom: 2.25rem; }
 
+/* ---------- Homy akışı: yapışkan hero + perde ---------- */
+.hero--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+}
+.curtain {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+}
+
+/* ---------- Manifesto (scroll ile kelime kelime beliren metin) ---------- */
+.manifesto {
+  padding-block: clamp(6rem, 12vw, 10rem);
+  background: var(--bg-elev);
+  border-block: 1px solid var(--line-soft);
+}
+.manifesto__text {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.75rem, 3.6vw, 3rem);
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+  max-width: 30ch;
+  margin-inline: auto;
+  text-align: center;
+}
+.manifesto__text em { font-style: italic; color: var(--gold-bright); }
+.manifesto__text .w { display: inline-block; }
+
+/* ---------- Sektörler: üst üste binen tam ekran kartlar ---------- */
+.stack { position: relative; }
+.stack__card {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elev) 55%, var(--bg) 100%);
+  border-top: 1px solid var(--line);
+  padding-block: calc(var(--nav-h) + 1.5rem) 3rem;
+}
+.stack__dim {
+  position: absolute; inset: 0; z-index: 3;
+  background: var(--bg);
+  opacity: 0;
+  pointer-events: none;
+}
+.stack__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 5rem);
+  will-change: transform;
+}
+.stack__no {
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic; font-weight: 300;
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--gold-deep);
+  margin-bottom: 1.25rem;
+}
+.stack__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  line-height: 1.1;
+  margin-bottom: 1rem;
+}
+.stack__desc {
+  color: var(--muted);
+  font-size: clamp(1rem, 1.4vw, 1.125rem);
+  max-width: 46ch;
+  margin-bottom: 1.75rem;
+}
+.stack__tags {
+  list-style: none;
+  display: flex; flex-wrap: wrap; gap: 0.6rem;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+.stack__tags li {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; letter-spacing: 0.08em;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+}
+.stack__icon {
+  width: min(320px, 30vw);
+  height: auto;
+  justify-self: center;
+  fill: none; stroke: var(--gold); stroke-width: 1.2;
+  opacity: 0.45;
+}
+
+/* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
+.zoom { position: relative; height: 240vh; }
+.zoom__pin {
+  position: sticky; top: 0;
+  height: 100svh;
+  overflow: hidden;
+  display: grid; place-items: center;
+  background: var(--bg);
+}
+.zoom__marquee {
+  position: absolute; top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  width: max-content;
+  font-family: var(--font-display);
+  font-style: italic; font-weight: 300;
+  font-size: clamp(4rem, 10vw, 9rem);
+  white-space: nowrap;
+  color: var(--muted);
+  opacity: 0.3;
+  animation: marquee 44s linear infinite;
+  pointer-events: none;
+}
+.zoom__marquee span { padding-right: 2.5rem; }
+.zoom__stage {
+  position: relative;
+  width: 100%; height: 100%;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%),
+    var(--bg-elev);
+  will-change: clip-path;
+}
+
 /* ---------- Form ---------- */
 .form { display: grid; gap: 1.1rem; text-align: left; max-width: 640px; }
 .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
@@ -889,6 +1026,13 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   .leadership__grid, .faq__grid, .contact__grid { grid-template-columns: 1fr; }
   .footer__grid { grid-template-columns: 1fr 1fr; }
   .page-hero__no { opacity: 0.5; }
+  .stack__inner { grid-template-columns: 1fr; }
+  .stack__icon { display: none; }
+  /* Mobilde zoom bölümü sabitlenmez; normal akışta durur */
+  .zoom { height: auto; }
+  .zoom__pin { position: static; height: auto; overflow: visible; }
+  .zoom__marquee { display: none; }
+  .zoom__stage { padding-block: 5rem; height: auto; }
 }
 
 @media (max-width: 560px) {

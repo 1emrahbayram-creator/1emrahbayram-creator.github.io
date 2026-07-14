@@ -285,6 +285,130 @@ function initForm(signal: AbortSignal) {
   );
 }
 
+/* ---------- Perde: hero çıkış animasyonu ---------- */
+function initCurtain() {
+  const heroInner = document.querySelector('.hero--sticky .hero__inner');
+  const curtain = document.querySelector('.curtain');
+  if (!heroInner || !curtain) return;
+  gsap.to(heroInner, {
+    autoAlpha: 0.15,
+    y: -60,
+    ease: 'none',
+    scrollTrigger: { trigger: curtain, start: 'top bottom', end: 'top top', scrub: 0.4 },
+  });
+}
+
+/* ---------- Manifesto: scroll ile kelime kelime beliren metin ---------- */
+function initManifesto() {
+  const el = document.getElementById('manifesto-metin');
+  if (!el || el.querySelector('.w')) {
+    if (el) buildManifestoTween(el);
+    return;
+  }
+  const wrap = (n: Node) => {
+    if (n.nodeType === Node.TEXT_NODE) {
+      const frag = document.createDocumentFragment();
+      (n.textContent ?? '').split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) {
+          frag.appendChild(document.createTextNode(' '));
+        } else {
+          const s = document.createElement('span');
+          s.className = 'w';
+          s.textContent = part;
+          frag.appendChild(s);
+        }
+      });
+      n.parentNode?.replaceChild(frag, n);
+    } else if (n.nodeType === Node.ELEMENT_NODE) {
+      [...n.childNodes].forEach(wrap);
+    }
+  };
+  [...el.childNodes].forEach(wrap);
+  buildManifestoTween(el);
+}
+
+function buildManifestoTween(el: HTMLElement) {
+  const words = el.querySelectorAll('.w');
+  if (!words.length) return;
+  gsap.set(words, { autoAlpha: 0.14 });
+  gsap.to(words, {
+    autoAlpha: 1,
+    ease: 'none',
+    stagger: 0.6,
+    scrollTrigger: { trigger: el, start: 'top 80%', end: 'bottom 45%', scrub: 0.4 },
+  });
+}
+
+/* ---------- Sektör kartları: öndeki kart gelirken alttaki kararır ---------- */
+function initStack() {
+  const cards = gsap.utils.toArray<HTMLElement>('.stack__card');
+  cards.forEach((card, i) => {
+    const next = cards[i + 1];
+    if (!next) return;
+    const dim = card.querySelector('.stack__dim');
+    const inner = card.querySelector('.stack__inner');
+    if (dim) {
+      gsap.fromTo(
+        dim,
+        { opacity: 0 },
+        {
+          opacity: 0.65,
+          ease: 'none',
+          scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: 0.3 },
+        }
+      );
+    }
+    if (inner) {
+      gsap.to(inner, {
+        scale: 0.95,
+        y: -30,
+        ease: 'none',
+        scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: 0.3 },
+      });
+    }
+  });
+}
+
+/* ---------- Zoom: sabitlenen kutu tam ekrana açılır ---------- */
+function initZoom() {
+  if (!window.matchMedia('(min-width: 861px)').matches) return;
+  const zoom = document.querySelector('.zoom');
+  const stage = document.querySelector('.zoom__stage');
+  const content = document.querySelector('.zoom__content');
+  if (!zoom || !stage) return;
+  gsap.fromTo(
+    stage,
+    { clipPath: 'inset(16% 24% 16% 24% round 28px)' },
+    {
+      clipPath: 'inset(0% 0% 0% 0% round 0px)',
+      ease: 'none',
+      scrollTrigger: { trigger: zoom, start: 'top top', end: 'bottom bottom', scrub: 0.4 },
+    }
+  );
+  if (content) {
+    gsap.fromTo(
+      content,
+      { autoAlpha: 0 },
+      {
+        autoAlpha: 1,
+        ease: 'none',
+        scrollTrigger: { trigger: zoom, start: 'top top', end: '40% top', scrub: 0.4 },
+      }
+    );
+  }
+  const steps = gsap.utils.toArray<HTMLElement>('.zoom__steps .process__step');
+  if (steps.length) {
+    gsap.from(steps, {
+      autoAlpha: 0,
+      y: 40,
+      stagger: 0.15,
+      ease: 'none',
+      scrollTrigger: { trigger: zoom, start: '25% top', end: '65% top', scrub: 0.4 },
+    });
+  }
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -303,6 +427,10 @@ function initPage() {
   initMagnetic(signal);
   initTilt(signal);
   initCursor(signal);
+  initCurtain();
+  initManifesto();
+  initStack();
+  initZoom();
 }
 
 document.addEventListener('astro:page-load', initPage);
