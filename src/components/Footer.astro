@@ -1,0 +1,45 @@
+---
+import Logo from './Logo.astro';
+import { sektorler } from '../data/sektorler';
+
+const yil = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="nav__brand" href="/" aria-label="Ares Holding — ana sayfa">
+          <Logo />
+        </a>
+        <p>
+          Küresel piyasalarda finansal kaynak yaratma, gayrimenkul geliştirme, teknoloji ve
+          uluslararası ticaret alanlarında İstanbul merkezli yatırım grubu.
+        </p>
+      </div>
+      <nav class="footer__col" aria-label="Kurumsal bağlantılar">
+        <h2>Kurumsal</h2>
+        <a href="/hakkimizda/">Hakkımızda</a>
+        <a href="/faaliyet-alanlari/">Faaliyet Alanları</a>
+        <a href="/iletisim/">İletişim</a>
+      </nav>
+      <nav class="footer__col" aria-label="Faaliyet alanı bağlantıları">
+        <h2>Faaliyet Alanları</h2>
+        {sektorler.map((s) => <a href={`/faaliyet-alanlari/${s.slug}/`}>{s.title}</a>)}
+      </nav>
+      <div class="footer__col">
+        <h2>İletişim</h2>
+        <a href="mailto:info@aresholding.com.tr">info@aresholding.com.tr</a>
+        <a href="/iletisim/">İletişim Formu</a>
+        <span>Merkez: İstanbul, Türkiye</span>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <p>© {yil} Ares Holding A.Ş. Tüm hakları saklıdır.</p>
+      <div class="footer__legal">
+        <a href="/kvkk/">KVKK Aydınlatma Metni</a>
+        <a href="/cerez-politikasi/">Çerez Politikası</a>
+      </div>
+    </div>
+  </div>
+</footer>

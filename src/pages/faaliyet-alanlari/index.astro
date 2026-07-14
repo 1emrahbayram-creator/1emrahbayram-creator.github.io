@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CTABand from '../../components/CTABand.astro';
+import { sektorler } from '../../data/sektorler';
+---
+
+<BaseLayout
+  title="Faaliyet Alanları — Ares Holding"
+  description="Ares Holding'in dört ana iş kolu: finans ve sermaye piyasaları, gayrimenkul ve turizm, akıllı kent teknolojileri, uluslararası ticaret ve hukuk."
+>
+  <PageHero
+    eyebrow="Faaliyet Alanları"
+    title="Birbirini besleyen <em>dört ana iş kolu</em>"
+    lede="Her iş kolumuz kendi alanında derinleşirken, grup sinerjisiyle ortak değer üretir. Detaylar için alanı seçin."
+  />
+
+  <section class="section" aria-label="İş kolları listesi">
+    <div class="container">
+      <div class="sector-grid">
+        {sektorler.map((s, i) => (
+          <article class="card sector-card gs-reveal" data-tilt data-delay={String(i % 2)}>
+            <div class="card__glare" aria-hidden="true"></div>
+            <div class="sector-card__top">
+              <span class="sector-card__no">{s.no}</span>
+              <svg class="sector-card__icon" viewBox="0 0 48 48" aria-hidden="true" set:html={s.ikon} />
+            </div>
+            <h2 class="sector-card__title">
+              <a class="sector-card__stretch" href={`/faaliyet-alanlari/${s.slug}/`}>{s.title}</a>
+            </h2>
+            <p class="sector-card__desc">{s.ozet}</p>
+            <span class="sector-card__link" aria-hidden="true">
+              Detaylı İncele<span class="btn__arrow">→</span>
+            </span>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>

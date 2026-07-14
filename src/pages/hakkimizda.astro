@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTABand from '../components/CTABand.astro';
+import { sektorler } from '../data/sektorler';
+
+const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
+---
+
+<BaseLayout
+  title="Hakkımızda — Ares Holding"
+  description="Ares Holding A.Ş.; finans, gayrimenkul, teknoloji ve uluslararası ticaret alanlarında faaliyet gösteren İstanbul merkezli çok sektörlü yatırım grubudur."
+>
+  <PageHero
+    eyebrow="Hakkımızda"
+    title="Dört sektör, tek vizyon: <em>kalıcı değer</em>"
+    lede="Ares Holding A.Ş., küresel piyasalarda finansal kaynak yaratma, uluslararası ticaret ve teknolojik altyapı yatırımları üzerine odaklanmış İstanbul merkezli çok yönlü bir şirketler grubudur."
+  />
+
+  <!-- KURUMSAL PROFİL + İSTATİSTİK -->
+  <section class="section" aria-labelledby="profil-baslik">
+    <div class="container">
+      <div class="leadership__grid">
+        <div class="gs-reveal">
+          <h2 class="section__title" id="profil-baslik">Uzmanlık alanlarımızı <em>tek çatıda</em> birleştiriyoruz</h2>
+        </div>
+        <div class="gs-reveal" data-delay="1">
+          <p style="color: var(--muted);">
+            Arsa temininden proje yönetimine, offshore fon süreçlerinden şirket birleşmelerine kadar
+            tüm süreçleri kendi uzman kadromuzla yürütürüz; yatırımcılarımıza ve iş ortaklarımıza tek
+            çatı altında bütünleşik çözümler sunarız.
+          </p>
+          <p style="color: var(--muted); margin-top: 1.25rem;">
+            Finans ve sermaye piyasalarındaki derinliğimizi; gayrimenkul geliştirme, akıllı kent
+            teknolojileri ve uluslararası ticaretteki saha deneyimimizle birleştirerek her projeye
+            küresel erişim kazandırıyoruz.
+          </p>
+        </div>
+      </div>
+      <dl class="stats gs-reveal" data-delay="2" style="margin-top: clamp(3rem, 6vw, 5rem);">
+        <div class="stats__item">
+          <dt>Ana İş Kolu</dt>
+          <dd><span class="stats__num" data-count="4">4</span></dd>
+        </div>
+        <div class="stats__item">
+          <dt>Uzmanlık Alanı</dt>
+          <dd><span class="stats__num" data-count={String(uzmanlikSayisi)}>{uzmanlikSayisi}</span></dd>
+        </div>
+        <div class="stats__item">
+          <dt>Uzman Kadro</dt>
+          <dd>51–200</dd>
+        </div>
+        <div class="stats__item">
+          <dt>Küresel Merkez</dt>
+          <dd class="stats__word">İstanbul</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- DEĞERLER -->
+  <section class="section section--elev grid-bg" aria-labelledby="degerler-baslik">
+    <div class="container">
+      <div class="section__head gs-reveal">
+        <h2 class="section__title" id="degerler-baslik">Bizi farklı kılan <em>ilkeler</em></h2>
+      </div>
+      <div class="values__grid">
+        <div class="card values__card gs-reveal" data-tilt>
+          <div class="card__glare" aria-hidden="true"></div>
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M20 4 34 10v9c0 8.4-6 15-14 17C12 34 6 27.4 6 19v-9Z" stroke-linejoin="round"></path>
+            <path d="m14 20 4 4 8-9" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <h3>Güven &amp; Şeffaflık</h3>
+          <p>Her ortaklıkta hesap verebilir süreçler ve açık raporlama düzeni kurarız.</p>
+        </div>
+        <div class="card values__card gs-reveal" data-tilt data-delay="1">
+          <div class="card__glare" aria-hidden="true"></div>
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="20" cy="20" r="15"></circle>
+            <path d="M5 20h30M20 5c4 4.5 6 9.5 6 15s-2 10.5-6 15c-4-4.5-6-9.5-6-15s2-10.5 6-15Z" stroke-linejoin="round"></path>
+          </svg>
+          <h3>Küresel Erişim</h3>
+          <p>Yurt dışı borsalar, offshore fonlar ve uluslararası ticaret ağlarına doğrudan erişim.</p>
+        </div>
+        <div class="card values__card gs-reveal" data-tilt data-delay="2">
+          <div class="card__glare" aria-hidden="true"></div>
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M20 6v28M8 12h24M12 12 7 22a5.5 5.5 0 0 0 10 0l-5-10Zm16 0-5 10a5.5 5.5 0 0 0 10 0l-5-10ZM14 34h12" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          <h3>Hukuki Güvence</h3>
+          <p>Sözleşme hukuku uzmanlığımızla her anlaşmanın hukuki zemini baştan sağlamdır.</p>
+        </div>
+        <div class="card values__card gs-reveal" data-tilt data-delay="3">
+          <div class="card__glare" aria-hidden="true"></div>
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <circle cx="13" cy="13" r="7"></circle>
+            <circle cx="27" cy="13" r="7"></circle>
+            <circle cx="13" cy="27" r="7"></circle>
+            <circle cx="27" cy="27" r="7"></circle>
+          </svg>
+          <h3>Sektörel Sinerji</h3>
+          <p>Finans, inşaat, teknoloji ve ticaret; birbirini büyüten entegre bir ekosistem.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YAKLAŞIM -->
+  <section class="section" aria-labelledby="yaklasim-baslik">
+    <div class="container">
+      <div class="section__head gs-reveal">
+        <h2 class="section__title" id="yaklasim-baslik">Dört adımda <em>sürdürülebilir değer</em></h2>
+        <p class="section__lede">Her yatırımda aynı disiplini uygularız: önce anlamak, sonra kalıcı sistem kurmak.</p>
+      </div>
+      <ol class="process__grid">
+        <li class="process__step gs-reveal">
+          <span class="process__no" aria-hidden="true">01</span>
+          <h3>Analiz</h3>
+          <p>Pazar, proje ve finansal yapının derinlemesine durum tespiti; risk haritasının çıkarılması.</p>
+        </li>
+        <li class="process__step gs-reveal" data-delay="1">
+          <span class="process__no" aria-hidden="true">02</span>
+          <h3>Yapılandırma</h3>
+          <p>Ortaklık modeli, finansman kurgusu ve hukuki zeminin projeye özel tasarlanması.</p>
+        </li>
+        <li class="process__step gs-reveal" data-delay="2">
+          <span class="process__no" aria-hidden="true">03</span>
+          <h3>Uygulama</h3>
+          <p>Uzman kadrolarımızla operasyonun hayata geçirilmesi ve aktif süreç yönetimi.</p>
+        </li>
+        <li class="process__step gs-reveal" data-delay="3">
+          <span class="process__no" aria-hidden="true">04</span>
+          <h3>Büyüme</h3>
+          <p>Performans takibi, ölçeklendirme ve değerin sürdürülebilir kılınması.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- YÖNETİM -->
+  <section class="section section--elev" aria-labelledby="yonetim-baslik">
+    <div class="container">
+      <div class="leadership__grid">
+        <div class="gs-reveal">
+          <h2 class="section__title" id="yonetim-baslik">Deneyimin <em>yön verdiği</em> kurumsal yönetim</h2>
+          <p class="leadership__text">
+            Ares Holding, güçlü kurumsal yönetişim ilkeleri ve alanında deneyimli yönetici
+            kadrosuyla; şeffaflık, hesap verebilirlik ve uzun vadeli değer üretimini esas alır.
+          </p>
+        </div>
+        <div class="leadership__card gs-reveal" data-delay="1">
+          <p class="leadership__statement">
+            Yatırımı sermaye aktarmak olarak değil; ortak olduğumuz her projeye vizyon, disiplin ve
+            küresel erişim kazandırmak olarak görüyoruz.
+          </p>
+          <div class="leadership__person">
+            <span class="leadership__avatar" aria-hidden="true">AVS</span>
+            <div>
+              <strong>Aydın Veli Serin</strong>
+              <span>Yönetim Kurulu Başkanı</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>

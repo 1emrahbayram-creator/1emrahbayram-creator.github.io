@@ -1,0 +1,74 @@
+---
+import '@fontsource-variable/archivo';
+import '@fontsource-variable/fraunces/standard.css';
+import '@fontsource-variable/fraunces/standard-italic.css';
+import '@fontsource-variable/hanken-grotesk';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  noindex?: boolean;
+}
+
+const { title, description, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL('/og-image.jpg', Astro.site);
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    {!noindex && <link rel="canonical" href={canonical} />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:site_name" content="Ares Holding" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: 'Ares Holding A.Ş.',
+        url: 'https://www.aresholding.com.tr',
+        logo: new URL('/favicon.svg', Astro.site).toString(),
+        address: { '@type': 'PostalAddress', addressLocality: 'İstanbul', addressCountry: 'TR' },
+        description:
+          'İstanbul merkezli çok sektörlü yatırım grubu: finans ve sermaye piyasaları, gayrimenkul geliştirme, akıllı kent teknolojileri ve uluslararası ticaret.',
+      })}
+    />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#icerik">İçeriğe geç</a>
+    <div class="grain" aria-hidden="true" transition:persist="grain"></div>
+    <div class="progress-bar" aria-hidden="true"></div>
+    <div class="cursor-ring" aria-hidden="true" transition:persist="cursor"></div>
+
+    <Nav />
+
+    <main id="icerik">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <script>
+      import '../scripts/app';
+    </script>
+  </body>
+</html>

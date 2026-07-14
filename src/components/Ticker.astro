@@ -1,0 +1,39 @@
+---
+const items = [
+  'Küresel Fon Yönetimi',
+  'Kentsel Dönüşüm',
+  'Melek Yatırımcılık',
+  'Akıllı Kent Sistemleri',
+  'İthalat & İhracat',
+  'Turizm Yatırımları',
+  'Şirket Birleşmeleri',
+  'Sözleşme Hukuku',
+];
+---
+
+<div class="ticker">
+  <button
+    class="ticker__pause"
+    id="ticker-pause"
+    type="button"
+    aria-pressed="false"
+    aria-label="Kayan şeridi duraklat"
+  >
+    <svg class="ticker__ico-pause" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M5 3v10M11 3v10" stroke-linecap="round"></path>
+    </svg>
+    <svg class="ticker__ico-play" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M5 3.5v9l8-4.5Z"></path>
+    </svg>
+  </button>
+  <div class="ticker__track" aria-hidden="true">
+    {[0, 1].map(() =>
+      items.map((item) => (
+        <>
+          <span>{item}</span>
+          <i>✦</i>
+        </>
+      ))
+    )}
+  </div>
+</div>

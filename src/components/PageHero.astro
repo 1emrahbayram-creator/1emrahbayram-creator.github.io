@@ -1,0 +1,38 @@
+---
+interface Crumb {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  no?: string;
+  crumbs?: Crumb[];
+}
+
+const { eyebrow, title, lede, no, crumbs } = Astro.props;
+---
+
+<section class="page-hero grid-bg">
+  {no && <span class="page-hero__no" aria-hidden="true">{no}</span>}
+  <div class="container">
+    {
+      crumbs && (
+        <nav class="page-hero__crumb gs-hero" aria-label="Sayfa konumu">
+          {crumbs.map((c) => (
+            <>
+              <a href={c.href}>{c.label}</a>
+              <span aria-hidden="true">/</span>
+            </>
+          ))}
+          <span>{eyebrow}</span>
+        </nav>
+      )
+    }
+    <h1 class="page-hero__title gs-hero" set:html={title} />
+    {lede && <p class="page-hero__lede gs-hero">{lede}</p>}
+    <slot />
+  </div>
+</section>

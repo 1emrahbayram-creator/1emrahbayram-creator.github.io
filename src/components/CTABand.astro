@@ -1,0 +1,24 @@
+---
+interface Props {
+  baslik?: string;
+  altMetin?: string;
+}
+
+const {
+  baslik = 'Projenizi birlikte <em>değerlendirelim.</em>',
+  altMetin = 'Yatırım, ortaklık veya ticaret iş birliği için ekibimizle bir görüşme planlayın.',
+} = Astro.props;
+---
+
+<section class="cta-band">
+  <div class="container">
+    <div class="cta-band__card gs-reveal">
+      <div class="cta-band__glow" aria-hidden="true"></div>
+      <div class="cta-band__content">
+        <h2 class="cta-band__title" set:html={baslik} />
+        <p class="cta-band__sub">{altMetin}</p>
+        <a class="btn btn--gold" href="/iletisim/" data-magnetic>Görüşme Planlayın</a>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+---
+
+<BaseLayout
+  title="İletişim — Ares Holding"
+  description="Yatırım, ortaklık veya ticaret iş birliği için Ares Holding ekibiyle iletişime geçin. Merkez: İstanbul."
+>
+  <PageHero
+    eyebrow="İletişim"
+    title="Projenizi birlikte <em>değerlendirelim</em>"
+    lede="Yatırım, ortaklık veya ticaret iş birliği için formu doldurun; ekibimiz en kısa sürede size dönüş yapsın."
+  />
+
+  <section class="section" aria-label="İletişim formu ve bilgileri">
+    <div class="container contact__grid">
+      <form class="form gs-reveal" id="iletisim-form" action="#" method="post">
+        <div class="form__row">
+          <div class="form__field">
+            <label for="f-ad">Ad Soyad</label>
+            <input id="f-ad" name="ad" type="text" placeholder="Adınız Soyadınız" autocomplete="name" required />
+          </div>
+          <div class="form__field">
+            <label for="f-eposta">E-posta</label>
+            <input id="f-eposta" name="eposta" type="email" placeholder="ornek@sirketiniz.com" autocomplete="email" required />
+          </div>
+        </div>
+        <div class="form__field">
+          <label for="f-mesaj">Mesajınız</label>
+          <textarea id="f-mesaj" name="mesaj" rows="5" placeholder="Projenizden kısaca bahsedin…" required></textarea>
+        </div>
+        <div class="form__consent">
+          <input type="checkbox" id="f-kvkk" name="kvkk" required aria-describedby="kvkk-link" />
+          <label for="f-kvkk">
+            KVKK Aydınlatma Metni’ni okudum; kişisel verilerimin bu kapsamda işlenmesini kabul
+            ediyorum.
+          </label>
+        </div>
+        <p class="form__kvkk-link" id="kvkk-link">
+          <a href="/kvkk/" target="_blank" rel="noopener">Aydınlatma metnini yeni sekmede okuyun →</a>
+        </p>
+        <button class="btn btn--gold btn--block" type="submit" data-magnetic>Görüşme Talep Et</button>
+        <noscript>
+          <p class="form__note">
+            Formu kullanabilmek için JavaScript gereklidir; dilerseniz talebinizi doğrudan
+            <a class="link-gold" href="mailto:info@aresholding.com.tr">info@aresholding.com.tr</a>
+            adresine iletebilirsiniz.
+          </p>
+        </noscript>
+        <p class="form__note" role="status" aria-live="polite"></p>
+      </form>
+
+      <aside class="contact__aside gs-reveal" data-delay="1">
+        <div class="contact__item">
+          <h2>E-posta</h2>
+          <a href="mailto:info@aresholding.com.tr">info@aresholding.com.tr</a>
+        </div>
+        <div class="contact__item">
+          <h2>Merkez</h2>
+          <p>İstanbul, Türkiye</p>
+        </div>
+        <div class="contact__item">
+          <h2>Çalışma Alanları</h2>
+          <p>Finans &amp; Sermaye Piyasaları · Gayrimenkul &amp; Turizm · Akıllı Kent Teknolojileri · Uluslararası Ticaret &amp; Hukuk</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SSS -->
+  <section class="section section--elev" id="sss" aria-labelledby="sss-baslik">
+    <div class="container faq__grid">
+      <div class="gs-reveal">
+        <h2 class="section__title" id="sss-baslik">Merak <em>edilenler</em></h2>
+        <p class="section__lede">
+          Sorunuzun yanıtını bulamadınız mı?
+          <a class="link-gold" href="mailto:info@aresholding.com.tr">Bize yazın</a>.
+        </p>
+      </div>
+      <div class="faq__list gs-reveal" data-delay="1">
+        <details class="faq__item">
+          <summary>Hangi sektörlerde faaliyet gösteriyorsunuz? <span class="faq__chev" aria-hidden="true"></span></summary>
+          <p>Dört ana iş kolunda çalışıyoruz: finans ve sermaye piyasaları; gayrimenkul, inşaat ve turizm; teknoloji ve akıllı kent sistemleri; uluslararası ticaret ve sözleşme hukuku danışmanlığı.</p>
+        </details>
+        <details class="faq__item">
+          <summary>Yatırım ortaklığı süreci nasıl işliyor? <span class="faq__chev" aria-hidden="true"></span></summary>
+          <p>Süreç dört adımda ilerler: projenizin analizi ve durum tespiti, ortaklık ve finansman modelinin yapılandırılması, operasyonun uzman kadromuzla uygulanması ve büyümenin sürdürülebilir kılınması.</p>
+        </details>
+        <details class="faq__item">
+          <summary>Melek yatırım için nasıl başvurabilirim? <span class="faq__chev" aria-hidden="true"></span></summary>
+          <p>Potansiyeli yüksek yeni nesil girişimlere erken aşama sermaye desteği sağlıyoruz. İletişim formu üzerinden projenizi özetleyen kısa bir tanıtım iletmeniz yeterli; ekibimiz değerlendirme için sizinle iletişime geçer.</p>
+        </details>
+        <details class="faq__item">
+          <summary>Gayrimenkul projelerinde hangi hizmetleri veriyorsunuz? <span class="faq__chev" aria-hidden="true"></span></summary>
+          <p>Arsa temini, kentsel dönüşüm, büyük ölçekli bina ve altyapı projelerinin geliştirilmesi ile turizm tesisi yatırımlarını uçtan uca kendi bünyemizde yönetiyoruz.</p>
+        </details>
+        <details class="faq__item">
+          <summary>Uluslararası ticarette hukuki destek sunuyor musunuz? <span class="faq__chev" aria-hidden="true"></span></summary>
+          <p>Evet. İthalat-ihracat operasyonlarının yanında uluslararası ticari anlaşmaların sözleşme hukuku zeminini hazırlıyor ve finansal risk analizlerini tamamlıyoruz.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

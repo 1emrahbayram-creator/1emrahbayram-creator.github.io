@@ -1,0 +1,41 @@
+---
+import Logo from './Logo.astro';
+
+const path = Astro.url.pathname;
+
+const links = [
+  { href: '/hakkimizda/', label: 'Hakkımızda' },
+  { href: '/faaliyet-alanlari/', label: 'Faaliyet Alanları' },
+  { href: '/iletisim/', label: 'İletişim' },
+];
+
+// aria-current: "page" yalnız birebir bulunulan sayfa; üst bölüm için "true"
+const currentFor = (href: string): 'page' | 'true' | undefined => {
+  if (path === href || path === href.replace(/\/$/, '')) return 'page';
+  if (href !== '/' && path.startsWith(href)) return 'true';
+  return undefined;
+};
+---
+
+<header class="nav" id="nav">
+  <div class="nav__inner container">
+    <a class="nav__brand" href="/" aria-label="Ares Holding — ana sayfa">
+      <Logo />
+    </a>
+    <button
+      class="nav__toggle"
+      id="nav-toggle"
+      aria-expanded="false"
+      aria-controls="nav-links"
+      aria-label="Menü"
+    >
+      <span></span><span></span>
+    </button>
+    <nav class="nav__links" id="nav-links" aria-label="Ana menü">
+      {links.map((l) => (
+        <a href={l.href} aria-current={currentFor(l.href)}>{l.label}</a>
+      ))}
+      <a class="btn btn--gold nav__cta" href="/iletisim/" data-magnetic>Bize Ulaşın</a>
+    </nav>
+  </div>
+</header>

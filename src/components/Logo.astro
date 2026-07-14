@@ -1,0 +1,25 @@
+---
+// Ares Holding logosu — orijinal marka kurgusu:
+// A harfi crossbar'sız (yatay çizgisiz) özel çizim; mızrak A'nın sol
+// bacağını keserek tepe noktasının sağ üstünde eşkenar dörtgen uçla biter,
+// kuyruğu sol altta kıl inceliğinde uzar. "RES" sayfa fontuyla (Archivo)
+// SVG text olarak akar. Ebeveyn bağlantı aria-label taşır.
+---
+
+<span class="logo" aria-hidden="true">
+  <svg class="logo__mark" viewBox="0 0 206 52" aria-hidden="true">
+    <!-- Asimetrik, crossbar'sız A: tepe sağa yaslı, sol bacak yatık -->
+    <path class="logo__a" d="M37.7 0 H47.1 L56.5 52 H43.3 L39.6 16.9 22.6 52 H0 Z"></path>
+    <!-- RES -->
+    <text class="logo__res" x="65" y="52">RES</text>
+    <g class="logo__spear">
+      <!-- Mızrak sol bacağın iç kenarı boyunca geçer: alt-dış parça geniş
+           kalır, tepe tarafında ince bir kama ayrılır -->
+      <polygon class="logo__slice" points="10.8,50.7 19.8,57.3 62.8,-0.7 53.8,-7.3"></polygon>
+      <polygon class="logo__shaft" points="-1.6,75.7 -0.6,76.5 56.4,3.1 52.2,-0.1"></polygon>
+      <!-- iri eşkenar dörtgen uç, tepenin sağ üstünde -->
+      <polygon class="logo__head" points="67.8,-19.6 66.4,-8 56.5,-1.5 58,-13.2"></polygon>
+    </g>
+  </svg>
+  <span class="logo__holding">HOLDİNG</span>
+</span>

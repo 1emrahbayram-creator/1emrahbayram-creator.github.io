@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://1emrahbayram-creator.github.io/sitemap-index.xml
