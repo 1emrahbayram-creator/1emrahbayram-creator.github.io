@@ -16,6 +16,7 @@ const { eyebrow, title, lede, no, crumbs } = Astro.props;
 ---
 
 <section class="page-hero grid-bg">
+  <slot name="arka" />
   {no && <span class="page-hero__no" aria-hidden="true">{no}</span>}
   <div class="container">
     {
