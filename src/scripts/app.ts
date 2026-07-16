@@ -413,7 +413,7 @@ function initZoom() {
    Tasarım handoff'undaki canvas bileşeninin vanilla portu: dönen tel kafes
    küre, İstanbul merkezli bağlantı yayları, akan ışık darbeleri ve etiketler. */
 function initGlobe(signal: AbortSignal) {
-  const cv = document.querySelector<HTMLCanvasElement>('.stack__globe');
+  const cv = document.querySelector<HTMLCanvasElement>('[data-gorsel="kure"]');
   if (!cv) return;
   const accent = '#D8C39A';
   const speed = 0.8;
@@ -615,6 +615,212 @@ function initGlobe(signal: AbortSignal) {
   });
 }
 
+/* ---------- Geliştirme görseli (gayrimenkul kartı arka planı) ----------
+   Tasarım handoff'undaki izometrik şantiye bileşeninin vanilla portu:
+   büyüyen tel kafes binalar, dönen vinç, zemin ölçüsü ve etiketler. */
+function initInsaat(signal: AbortSignal) {
+  const cv = document.querySelector<HTMLCanvasElement>('[data-gorsel="insaat"]');
+  if (!cv) return;
+  const accent = '#D8C39A';
+  const speed = 1;
+
+  interface Yapi { x: number; y: number; w: number; d: number; h: number; delay: number; label?: string; sub?: string; beacon?: boolean; }
+  const yapilar: Yapi[] = [
+    { x: 1.2, y: 4.6, w: 1.6, d: 1.6, h: 2.0, delay: 0.0, label: 'KENTSEL DÖNÜŞÜM', sub: 'BLOK A · YENİLEME' },
+    { x: 3.2, y: 4.4, w: 1.4, d: 1.4, h: 3.4, delay: 0.5 },
+    { x: 5.0, y: 4.8, w: 1.8, d: 1.5, h: 5.2, delay: 1.0, label: 'BİNA & ALTYAPI PROJELERİ', sub: 'KULE · 34 KAT', beacon: true },
+    { x: 7.3, y: 4.5, w: 1.5, d: 1.5, h: 2.8, delay: 1.5 },
+    { x: 8.1, y: 6.6, w: 2.6, d: 1.7, h: 1.1, delay: 2.0, label: 'TURİZM YATIRIMLARI', sub: 'RESORT · SAHİL HATTI' },
+    { x: 2.4, y: 6.8, w: 1.2, d: 1.2, h: 1.5, delay: 2.4 },
+  ];
+
+  const rgba = (hex: string, a: number) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${Math.max(0, Math.min(1, a)).toFixed(3)})`;
+  };
+
+  const draw = (t: number) => {
+    const parent = cv.parentElement;
+    if (!parent) return;
+    const box = parent.getBoundingClientRect();
+    const w = Math.max(1, box.width);
+    const h = Math.max(1, box.height);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr)) {
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const genis = w > 860;
+    const showLabels = w > 700;
+    const s = Math.min(genis ? w * 0.55 : w, h) / 13;
+    const cx = w * (genis ? 0.62 : 0.5);
+    const cy = h * 0.56;
+    const ISO = (x: number, y: number, z: number) => ({
+      X: cx + (x - y) * s * 0.87,
+      Y: cy + (x + y) * s * 0.5 - z * s * 0.9 - 5 * s * 0.5 - 2 * s,
+    });
+    const ease = (u: number) => (u <= 0 ? 0 : u >= 1 ? 1 : 1 - Math.pow(1 - u, 3));
+    type Pt = ReturnType<typeof ISO>;
+    const line = (a: Pt, b: Pt, st: string) => {
+      ctx.strokeStyle = st;
+      ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+    };
+
+    // izometrik zemin ızgarası
+    ctx.lineWidth = 1;
+    const G = 11;
+    for (let i = 0; i <= G; i++) {
+      const fade = 0.1 - 0.05 * (Math.abs(i - G / 2) / (G / 2));
+      line(ISO(i, 0, 0), ISO(i, G, 0), `rgba(255,255,255,${fade.toFixed(3)})`);
+      line(ISO(0, i, 0), ISO(G, i, 0), `rgba(255,255,255,${fade.toFixed(3)})`);
+    }
+
+    // zeminde genişleyen etüt halkası
+    const pr = ((t * 0.25 * speed) % 1) * 5;
+    ctx.strokeStyle = rgba(accent, 0.25 * (1 - pr / 5));
+    ctx.beginPath();
+    for (let a = 0; a <= 64; a++) {
+      const rad = (a / 64) * Math.PI * 2;
+      const p = ISO(5.5 + pr * Math.cos(rad), 5.5 + pr * Math.sin(rad), 0);
+      a === 0 ? ctx.moveTo(p.X, p.Y) : ctx.lineTo(p.X, p.Y);
+    }
+    ctx.stroke();
+
+    // kesikli parsel sınırları
+    ctx.setLineDash([4, 4]);
+    yapilar.forEach((b) => {
+      const m = 0.25;
+      const c = [
+        ISO(b.x - m, b.y - m, 0), ISO(b.x + b.w + m, b.y - m, 0),
+        ISO(b.x + b.w + m, b.y + b.d + m, 0), ISO(b.x - m, b.y + b.d + m, 0),
+      ];
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.beginPath(); ctx.moveTo(c[0].X, c[0].Y);
+      c.forEach((p) => ctx.lineTo(p.X, p.Y));
+      ctx.closePath(); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // binalar (arkadan öne)
+    const etiketler: Array<{ b: Yapi; p: Pt }> = [];
+    [...yapilar].sort((a, b) => a.x + a.y - (b.x + b.y)).forEach((b) => {
+      const gh = b.h * ease((t * speed * 0.8 - b.delay) / 1.6);
+      const c0 = ISO(b.x, b.y, 0), c1 = ISO(b.x + b.w, b.y, 0);
+      const c2 = ISO(b.x + b.w, b.y + b.d, 0), c3 = ISO(b.x, b.y + b.d, 0);
+      const t0 = ISO(b.x, b.y, gh), t1 = ISO(b.x + b.w, b.y, gh);
+      const t2 = ISO(b.x + b.w, b.y + b.d, gh), t3 = ISO(b.x, b.y + b.d, gh);
+      const dim = 'rgba(255,255,255,0.14)', lit = 'rgba(255,255,255,0.42)';
+      line(c0, c1, dim); line(c1, c2, lit); line(c2, c3, lit); line(c3, c0, dim);
+      if (gh > 0.02) {
+        line(c0, t0, dim); line(c1, t1, lit); line(c2, t2, lit); line(c3, t3, lit);
+        line(t0, t1, lit); line(t1, t2, lit); line(t2, t3, lit); line(t3, t0, lit);
+        const katlar = Math.floor(gh / 0.45);
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        for (let f = 1; f <= katlar; f++) {
+          const z = f * 0.45;
+          const a1 = ISO(b.x + b.w, b.y, z), a2 = ISO(b.x + b.w, b.y + b.d, z), a3 = ISO(b.x, b.y + b.d, z);
+          ctx.beginPath(); ctx.moveTo(a1.X, a1.Y); ctx.lineTo(a2.X, a2.Y); ctx.lineTo(a3.X, a3.Y); ctx.stroke();
+        }
+        if (b.beacon && gh > b.h * 0.95) {
+          const bk = 0.5 + 0.5 * Math.sin(t * 2.5 * speed);
+          const bp = ISO(b.x + b.w / 2, b.y + b.d / 2, gh + 0.25);
+          ctx.fillStyle = rgba(accent, 0.4 + 0.6 * bk);
+          ctx.beginPath(); ctx.arc(bp.X, bp.Y, 2.2, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = rgba(accent, 0.35 * (1 - bk));
+          ctx.beginPath(); ctx.arc(bp.X, bp.Y, 4 + 6 * bk, 0, Math.PI * 2); ctx.stroke();
+        }
+      }
+      if (b.label) etiketler.push({ b, p: ISO(b.x + b.w / 2, b.y + b.d / 2, Math.max(gh, 0.1)) });
+    });
+
+    // kulenin yanındaki vinç
+    const kb = ISO(4.4, 3.6, 0), kt = ISO(4.4, 3.6, 6.2);
+    line(kb, kt, 'rgba(255,255,255,0.30)');
+    const ang = Math.sin(t * 0.3 * speed) * 0.5 + 0.4;
+    const jx = 4.4 + 2.6 * Math.cos(ang), jy = 3.6 + 2.6 * Math.sin(ang);
+    const je = ISO(jx, jy, 6.2), jc = ISO(4.4 - 0.9 * Math.cos(ang), 3.6 - 0.9 * Math.sin(ang), 6.2);
+    line(jc, je, 'rgba(255,255,255,0.30)');
+    line(jc, ISO(4.4, 3.6, 5.4), 'rgba(255,255,255,0.16)');
+    line(je, ISO(4.4, 3.6, 5.4), 'rgba(255,255,255,0.16)');
+    const hookZ = 3.4 + 1.6 * Math.sin(t * 0.45 * speed);
+    const hk = ISO(jx, jy, hookZ);
+    line(je, hk, rgba(accent, 0.5));
+    ctx.fillStyle = rgba(accent, 0.9);
+    ctx.fillRect(hk.X - 2.5, hk.Y - 2.5, 5, 5);
+
+    // ön cephede ölçü çizgisi
+    const d1 = ISO(1.2, 8.8, 0), d2 = ISO(9.8, 8.8, 0);
+    line(d1, d2, 'rgba(255,255,255,0.18)');
+    [d1, d2].forEach((p) => {
+      ctx.beginPath(); ctx.moveTo(p.X - 4, p.Y - 4); ctx.lineTo(p.X + 4, p.Y + 4);
+      ctx.strokeStyle = 'rgba(255,255,255,0.30)'; ctx.stroke();
+    });
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('İMAR SAHASI — 42.600 m²', (d1.X + d2.X) / 2, (d1.Y + d2.Y) / 2 + 10);
+
+    // etiketler
+    if (showLabels) {
+      ctx.font = '500 11px "JetBrains Mono Variable", monospace';
+      etiketler.forEach(({ b, p }, i) => {
+        const sag = p.X >= cx;
+        const ex = p.X + (sag ? 70 : -70), ey = p.Y - 34 - i * 6;
+        ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+        ctx.beginPath(); ctx.moveTo(p.X, p.Y - 6); ctx.lineTo(ex, ey); ctx.lineTo(ex + (sag ? 14 : -14), ey); ctx.stroke();
+        ctx.textAlign = sag ? 'left' : 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = rgba(accent, 0.95);
+        ctx.fillText(b.label!, ex + (sag ? 20 : -20), ey);
+        if (b.sub) {
+          ctx.fillStyle = 'rgba(255,255,255,0.35)';
+          ctx.fillText(b.sub, ex + (sag ? 20 : -20), ey + 15);
+        }
+      });
+    }
+
+    // köşe yazıları
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.30)';
+    ctx.fillText('// ARSA TEMİNİNDEN ANAHTAR TESLİME', 28, h - 28);
+    ctx.textAlign = 'right';
+    ctx.fillText('ÖLÇEK 1:500', w - 28, h - 28);
+  };
+
+  let raf = 0;
+  let t0: number | null = null; // ilk görünürlükte başlar: binalar izleyicinin gözü önünde yükselir
+  const hareketli = !reduced();
+  const loop = (now: number) => {
+    if (t0 === null) t0 = now;
+    draw((now - t0) / 1000);
+    raf = requestAnimationFrame(loop);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        cancelAnimationFrame(raf);
+        if (e.isIntersecting && hareketli) raf = requestAnimationFrame(loop);
+      });
+    },
+    { threshold: 0.05 }
+  );
+  io.observe(cv);
+  const ro = new ResizeObserver(() => draw(hareketli && t0 !== null ? (performance.now() - t0) / 1000 : 30));
+  ro.observe(cv.parentElement!);
+  draw(hareketli ? 0 : 30);
+  signal.addEventListener('abort', () => {
+    cancelAnimationFrame(raf);
+    io.disconnect();
+    ro.disconnect();
+  });
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -624,6 +830,7 @@ function initPage() {
   initTicker(signal);
   initForm(signal);
   initGlobe(signal); // hareket azaltmada tek statik kare çizer
+  initInsaat(signal);
 
   if (reduced()) return; // hareket azaltmada içerik zaten görünür
 
