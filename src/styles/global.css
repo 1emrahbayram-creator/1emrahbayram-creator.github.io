@@ -819,6 +819,10 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
 [data-gorsel="kent"] {
   background: linear-gradient(180deg, #000310, #28211a);
 }
+/* Ticaret & hukuk görseli: koyu lacivert zemin */
+[data-gorsel="ticaret"] {
+  background: #000623;
+}
 
 /* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
 .zoom { position: relative; height: 240vh; }
@@ -873,6 +877,8 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   filter: grayscale(1) opacity(0.75);
   transition: filter 0.3s;
 }
+/* Raster (jpg) logolar zeminli geldiğinden plaka gibi yumuşatılır */
+.istirak__logo[src$='.jpg'] { border-radius: 8px; }
 .istirak:hover .istirak__logo { filter: grayscale(0) opacity(1); }
 .istirak__placeholder {
   display: grid; place-items: center;

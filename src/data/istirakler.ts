@@ -13,7 +13,7 @@ export const istirakler: Istirak[] = [
   {
     ad: 'Kartonsan',
     url: 'https://www.kartonsan.com.tr/tr/',
-    // logo bekleniyor
+    logo: '/istirakler/kartonsan.jpg',
   },
   {
     ad: 'Pek Yatırım Menkul Değerler',

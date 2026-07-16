@@ -1046,6 +1046,229 @@ function initAkilliKent(signal: AbortSignal) {
   });
 }
 
+/* ---------- Ticaret & hukuk görseli (ticaret kartı arka planı) ----------
+   Tasarım handoff'undaki ticaret koridoru bileşeninin vanilla portu:
+   ihracat/ithalat hatları, hukuk mührü (§) ve finansal risk göstergesi. */
+function initTicaret(signal: AbortSignal) {
+  const cv = document.querySelector<HTMLCanvasElement>('[data-gorsel="ticaret"]');
+  if (!cv) return;
+  const accent = '#D8C39A';
+  const speed = 1;
+
+  const rgba = (hex: string, a: number) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${Math.max(0, Math.min(1, a)).toFixed(3)})`;
+  };
+
+  const draw = (t: number) => {
+    const parent = cv.parentElement;
+    if (!parent) return;
+    const box = parent.getBoundingClientRect();
+    const w = Math.max(1, box.width);
+    const h = Math.max(1, box.height);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr)) {
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const genis = w > 860;
+    const showLabels = w > 700;
+    // Geniş ekranda koridor kartın sağ yarısında akar; kart metni solda kalır
+    const wx = genis ? w * 0.42 : 0;
+    const ww = genis ? w * 0.56 : w;
+    const cx = wx + ww / 2;
+    const laneTop = h * 0.18, laneBot = h * 0.62;
+    const Lx = wx + ww * 0.14, Rx = wx + ww * 0.86;
+
+    const ihracat = ['İSTANBUL', 'İZMİR', 'MERSİN'];
+    const ithalat = ['ROTTERDAM', 'SİNGAPUR', 'NEW YORK'];
+    const py = (i: number) => laneTop + (laneBot - laneTop) * (i / 2);
+
+    const Q = (x0: number, y0: number, x1: number, y1: number, u: number) => {
+      const mx = cx, my = (y0 + y1) / 2 - h * 0.1;
+      const a = 1 - u;
+      return {
+        X: a * a * x0 + 2 * a * u * mx + u * u * x1,
+        Y: a * a * y0 + 2 * a * u * my + u * u * y1,
+      };
+    };
+
+    // merkez hukuki kontrol hattı
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 6]);
+    ctx.strokeStyle = 'rgba(255,255,255,0.14)';
+    ctx.beginPath(); ctx.moveTo(cx, h * 0.08); ctx.lineTo(cx, h * 0.86); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // hatlar
+    const hatlar: Array<[number, number]> = [[0, 1], [1, 0], [2, 2], [0, 2], [2, 0]];
+    hatlar.forEach((ln) => {
+      const y0 = py(ln[0]), y1 = py(ln[1]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.beginPath();
+      for (let s = 0; s <= 48; s++) {
+        const p = Q(Lx, y0, Rx, y1, s / 48);
+        s === 0 ? ctx.moveTo(p.X, p.Y) : ctx.lineTo(p.X, p.Y);
+      }
+      ctx.stroke();
+    });
+    // hareketli darbeler: ihracat (aksan, →) ve ithalat (beyaz, ←)
+    hatlar.forEach((ln, i) => {
+      const y0 = py(ln[0]), y1 = py(ln[1]);
+      const disa = i % 2 === 0;
+      const ph = (t * 0.08 * speed + i * 0.19) % 1;
+      const u = disa ? ph : 1 - ph;
+      const bas = Q(Lx, y0, Rx, y1, u);
+      for (let q = 1; q <= 7; q++) {
+        const ub = disa ? u - q * 0.012 : u + q * 0.012;
+        if (ub < 0 || ub > 1) break;
+        const p0 = Q(Lx, y0, Rx, y1, ub);
+        const p1 = Q(Lx, y0, Rx, y1, disa ? ub + 0.012 : ub - 0.012);
+        ctx.strokeStyle = disa
+          ? rgba(accent, 0.5 * (1 - q / 8))
+          : `rgba(255,255,255,${(0.4 * (1 - q / 8)).toFixed(3)})`;
+        ctx.beginPath(); ctx.moveTo(p0.X, p0.Y); ctx.lineTo(p1.X, p1.Y); ctx.stroke();
+      }
+      ctx.fillStyle = disa ? rgba(accent, 0.95) : 'rgba(255,255,255,0.85)';
+      ctx.beginPath(); ctx.arc(bas.X, bas.Y, 2, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // liman düğümleri + adlar
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.textBaseline = 'middle';
+    ihracat.forEach((n, i) => {
+      const y = py(i);
+      ctx.fillStyle = rgba(accent, 0.9);
+      ctx.beginPath(); ctx.arc(Lx, y, 2.4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.20)';
+      ctx.beginPath(); ctx.arc(Lx, y, 6, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.textAlign = 'right';
+      ctx.fillText(n, Lx - 16, y);
+    });
+    ithalat.forEach((n, i) => {
+      const y = py(i);
+      ctx.fillStyle = 'rgba(255,255,255,0.8)';
+      ctx.beginPath(); ctx.arc(Rx, y, 2.4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.20)';
+      ctx.beginPath(); ctx.arc(Rx, y, 6, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.textAlign = 'left';
+      ctx.fillText(n, Rx + 16, y);
+    });
+
+    // kontrol noktasındaki hukuk mührü (dönen tik halkası + §)
+    const sy = h * 0.3, sr = Math.min(ww, h) * 0.055;
+    ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+    ctx.beginPath(); ctx.arc(cx, sy, sr, 0, Math.PI * 2); ctx.stroke();
+    const ra = t * 0.25 * speed;
+    for (let k = 0; k < 24; k++) {
+      const a = ra + (k / 24) * Math.PI * 2;
+      const r1 = sr + 4, r2 = sr + (k % 6 === 0 ? 11 : 7);
+      ctx.strokeStyle = `rgba(255,255,255,${k % 6 === 0 ? 0.3 : 0.14})`;
+      ctx.beginPath();
+      ctx.moveTo(cx + r1 * Math.cos(a), sy + r1 * Math.sin(a));
+      ctx.lineTo(cx + r2 * Math.cos(a), sy + r2 * Math.sin(a));
+      ctx.stroke();
+    }
+    ctx.strokeStyle = rgba(accent, 0.5);
+    ctx.beginPath(); ctx.arc(cx, sy, sr * 0.62, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = rgba(accent, 0.95);
+    ctx.font = `500 ${Math.round(sr * 0.7)}px "JetBrains Mono Variable", monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText('§', cx, sy + 1);
+
+    // risk göstergesi (alt merkez)
+    const gy = h * 0.8, gr = Math.min(ww, h) * 0.085;
+    for (let k = 0; k <= 28; k++) {
+      const a = Math.PI + (k / 28) * Math.PI;
+      const bolge = k / 28;
+      const r1 = gr - (k % 7 === 0 ? 10 : 6), r2 = gr;
+      ctx.strokeStyle = bolge < 0.5
+        ? rgba(accent, 0.2 + 0.25 * (k % 7 === 0 ? 1 : 0))
+        : `rgba(255,255,255,${k % 7 === 0 ? 0.3 : 0.12})`;
+      ctx.beginPath();
+      ctx.moveTo(cx + r1 * Math.cos(a), gy + r1 * Math.sin(a));
+      ctx.lineTo(cx + r2 * Math.cos(a), gy + r2 * Math.sin(a));
+      ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath(); ctx.arc(cx, gy, gr, Math.PI, Math.PI * 2); ctx.stroke();
+    // ibre kontrollü bölgede, hafif nefes alır
+    const na = Math.PI + Math.PI * (0.3 + 0.06 * Math.sin(t * 0.7 * speed));
+    ctx.strokeStyle = rgba(accent, 0.9);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(cx, gy);
+    ctx.lineTo(cx + (gr - 14) * Math.cos(na), gy + (gr - 14) * Math.sin(na)); ctx.stroke();
+    ctx.lineWidth = 1;
+    ctx.fillStyle = rgba(accent, 0.9);
+    ctx.beginPath(); ctx.arc(cx, gy, 2.5, 0, Math.PI * 2); ctx.fill();
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.35)';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('RİSK — KONTROL ALTINDA', cx, gy + 12);
+
+    // etiketler
+    if (showLabels) {
+      ctx.font = '500 11px "JetBrains Mono Variable", monospace';
+      ctx.textBaseline = 'middle';
+      const yaz = (p: { X: number; Y: number }, txt: string, alt: string, dx: number, dy: number) => {
+        const ex = p.X + dx, ey = p.Y + dy, sag = dx >= 0;
+        ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+        ctx.beginPath(); ctx.moveTo(p.X, p.Y); ctx.lineTo(ex, ey); ctx.lineTo(ex + (sag ? 14 : -14), ey); ctx.stroke();
+        ctx.textAlign = sag ? 'left' : 'right';
+        ctx.fillStyle = rgba(accent, 0.95);
+        ctx.fillText(txt, ex + (sag ? 20 : -20), ey);
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillText(alt, ex + (sag ? 20 : -20), ey + 15);
+      };
+      const orta = Q(Lx, py(0), Rx, py(2), 0.3);
+      yaz(orta, 'İTHALAT & İHRACAT', 'AKTİF KORİDOR · ÇİFT YÖN', -46, -40);
+      yaz({ X: cx + sr + 8, Y: sy - sr * 0.5 }, 'SÖZLEŞME HUKUKU DANIŞMANLIĞI', 'HER GEÇİŞTE HUKUKİ GÜVENCE', 52, -26);
+      yaz({ X: cx + gr * 0.75, Y: gy - gr * 0.55 }, 'FİNANSAL RİSK ANALİZİ', 'SÜREKLİ İZLEME', 56, -18);
+    }
+
+    // köşe yazıları
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.30)';
+    ctx.fillText('// KÜRESEL TİCARET KORİDORU', 28, h - 28);
+    ctx.textAlign = 'right';
+    ctx.fillText('İHRACAT → / ← İTHALAT', w - 28, h - 28);
+  };
+
+  let raf = 0;
+  const t0 = performance.now();
+  const hareketli = !reduced();
+  const loop = (now: number) => {
+    draw((now - t0) / 1000);
+    raf = requestAnimationFrame(loop);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        cancelAnimationFrame(raf);
+        if (e.isIntersecting && hareketli) raf = requestAnimationFrame(loop);
+      });
+    },
+    { threshold: 0.05 }
+  );
+  io.observe(cv);
+  const ro = new ResizeObserver(() => draw(hareketli ? (performance.now() - t0) / 1000 : 25));
+  ro.observe(cv.parentElement!);
+  draw(hareketli ? 0 : 25);
+  signal.addEventListener('abort', () => {
+    cancelAnimationFrame(raf);
+    io.disconnect();
+    ro.disconnect();
+  });
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -1057,6 +1280,7 @@ function initPage() {
   initGlobe(signal); // hareket azaltmada tek statik kare çizer
   initInsaat(signal);
   initAkilliKent(signal);
+  initTicaret(signal);
 
   if (reduced()) return; // hareket azaltmada içerik zaten görünür
 
