@@ -1269,6 +1269,197 @@ function initTicaret(signal: AbortSignal) {
   });
 }
 
+/* ---------- Hero mızrak görseli (anasayfa hero arka planı) ----------
+   Tasarım handoff'undaki "Hero Slider" bileşeninin vanilla portu:
+   warp yıldız tarlası, enerji kuyruğu ve uçan Ares mızrağı. */
+function initMizrak(signal: AbortSignal) {
+  const cv = document.querySelector<HTMLCanvasElement>('[data-gorsel="mizrak"]');
+  if (!cv) return;
+  const accent = '#D8C39A';
+  const speed = 1;
+
+  const rgba = (hex: string, a: number) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${Math.max(0, Math.min(1, a)).toFixed(3)})`;
+  };
+  const rnd = (i: number) => Math.abs(Math.sin(i * 127.1 + 311.7) * 43758.5453) % 1;
+
+  const draw = (t: number) => {
+    const parent = cv.parentElement;
+    if (!parent) return;
+    const box = parent.getBoundingClientRect();
+    const w = Math.max(1, box.width);
+    const h = Math.max(1, box.height);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr)) {
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const T = t * speed;
+    // mızrak sağ üçte birlik alanda süzülür, hafif salınım yapar
+    const sx = w * (w > 860 ? 0.64 : 0.5) + Math.sin(T * 0.9) * w * 0.012;
+    const sy = h * 0.52 + Math.sin(T * 1.7) * h * 0.02 + Math.cos(T * 0.6) * h * 0.012;
+    const tiltA = Math.sin(T * 1.1) * 0.035;
+    const cosA = Math.cos(tiltA), sinA = Math.sin(tiltA);
+    const R = (x: number, y: number) => ({ X: sx + x * cosA - y * sinA, Y: sy + x * sinA + y * cosA });
+    const U = Math.min(w, h) / 900;
+
+    // warp yıldız tarlası: geriye akan çizgiler
+    for (let i = 0; i < 90; i++) {
+      const seed = rnd(i);
+      const lane = rnd(i + 50) * h;
+      const depth = 0.25 + seed * 0.75;
+      const vel = (0.35 + seed) * w * 0.5 * depth;
+      const px = w - ((seed * w * 3 + T * vel) % (w * 1.3)) + w * 0.15;
+      const len = vel * 0.06 * (0.5 + depth);
+      const dy = (lane - sy) * 0.06 * depth;
+      const al = 0.04 + 0.2 * depth;
+      ctx.strokeStyle = `rgba(255,255,255,${al.toFixed(3)})`;
+      ctx.lineWidth = depth > 0.8 ? 1.4 : 1;
+      ctx.beginPath(); ctx.moveTo(px, lane); ctx.lineTo(px + len, lane - dy * 0.2); ctx.stroke();
+    }
+    ctx.lineWidth = 1;
+
+    // mızrağın yanından geriye süpürülen şok halkaları
+    for (let k = 0; k < 3; k++) {
+      const ph = (T * 0.5 + k / 3) % 1;
+      const rx = sx + 120 * U - ph * w * 0.9;
+      const rr = (30 + ph * 340) * U;
+      ctx.strokeStyle = rgba(accent, 0.22 * (1 - ph));
+      ctx.beginPath(); ctx.ellipse(rx, sy, rr * 0.28, rr, 0, 0, Math.PI * 2); ctx.stroke();
+    }
+
+    // enerji kuyruğu: türbülanslı şeritler
+    const tail = 620 * U;
+    for (let r = 0; r < 3; r++) {
+      ctx.beginPath();
+      for (let s = 0; s <= 60; s++) {
+        const u = s / 60;
+        const x = -u * tail;
+        const amp = (4 + 46 * u * u) * U;
+        const y = Math.sin(u * 14 - T * 10 + r * 2.1) * amp * (0.5 + 0.5 * rnd(r * 7 + s));
+        const p = R(x, y);
+        s === 0 ? ctx.moveTo(p.X, p.Y) : ctx.lineTo(p.X, p.Y);
+      }
+      ctx.strokeStyle = rgba(accent, 0.3 - r * 0.09);
+      ctx.stroke();
+    }
+    // kuyruk kıvılcımları
+    for (let i = 0; i < 26; i++) {
+      const ph = (rnd(i + 9) + T * (0.6 + rnd(i) * 0.8)) % 1;
+      const x = -ph * tail;
+      const y = (rnd(i + 31) - 0.5) * 110 * U * (0.3 + ph);
+      const p = R(x, y);
+      ctx.fillStyle = rgba(accent, 0.85 * (1 - ph));
+      const sz = 1 + 1.6 * (1 - ph);
+      ctx.fillRect(p.X - sz / 2, p.Y - sz / 2, sz, sz);
+    }
+
+    // MIZRAK
+    const shaft = 300 * U, headL = 92 * U, headW = 26 * U;
+    // gövde: metalik çift çizgi
+    let a = R(-shaft, 0), b = R(0, 0);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)';
+    ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+    ctx.lineWidth = 1;
+    a = R(-shaft, -2.5 * U); b = R(-headL * 0.2, -2.5 * U);
+    ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+    ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+    // kabza sargıları
+    for (let g = 0; g < 4; g++) {
+      const gx = -shaft * (0.45 + g * 0.09);
+      const g1 = R(gx, -4 * U), g2 = R(gx + 6 * U, 4 * U);
+      ctx.strokeStyle = 'rgba(255,255,255,0.45)';
+      ctx.beginPath(); ctx.moveTo(g1.X, g1.Y); ctx.lineTo(g2.X, g2.Y); ctx.stroke();
+    }
+    // dip sivri ucu
+    const bt1 = R(-shaft, 0), bt2 = R(-shaft - 26 * U, 0);
+    ctx.strokeStyle = rgba(accent, 0.7);
+    ctx.beginPath(); ctx.moveTo(bt1.X, bt1.Y); ctx.lineTo(bt2.X, bt2.Y); ctx.stroke();
+    // siperlik
+    const cg1 = R(-headL * 0.1, -16 * U), cg2 = R(-headL * 0.1, 16 * U);
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = rgba(accent, 0.9);
+    ctx.beginPath(); ctx.moveTo(cg1.X, cg1.Y); ctx.lineTo(cg2.X, cg2.Y); ctx.stroke();
+    // uç (dolgulu bıçak)
+    const tip = R(headL, 0), w1 = R(0, -headW / 2), w2 = R(0, headW / 2), nk = R(headL * 0.18, 0);
+    const grad = ctx.createLinearGradient(w1.X, w1.Y, tip.X, tip.Y);
+    grad.addColorStop(0, rgba(accent, 0.25));
+    grad.addColorStop(1, rgba(accent, 0.95));
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.moveTo(w1.X, w1.Y); ctx.lineTo(tip.X, tip.Y); ctx.lineTo(w2.X, w2.Y); ctx.lineTo(nk.X, nk.Y); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = rgba(accent, 1);
+    ctx.stroke();
+    ctx.lineWidth = 1;
+    // bıçak orta çizgisi parlaması
+    const gl = 0.5 + 0.5 * Math.sin(T * 5);
+    const glA = R(headL * (0.2 + 0.5 * gl), 0);
+    ctx.strokeStyle = `rgba(255,255,255,${(0.5 + 0.4 * gl).toFixed(3)})`;
+    ctx.beginPath(); ctx.moveTo(nk.X, nk.Y); ctx.lineTo(glA.X, glA.Y); ctx.stroke();
+
+    // uç önünde sıkışan şok yayları
+    for (let k = 0; k < 4; k++) {
+      const ph = (T * 1.6 + k / 4) % 1;
+      const d = (14 + ph * 90) * U;
+      const p = R(headL + d, 0);
+      const rr = (10 + ph * 60) * U;
+      ctx.strokeStyle = rgba(accent, 0.5 * (1 - ph));
+      ctx.beginPath();
+      ctx.arc(p.X, p.Y, rr, Math.PI * 0.62 + tiltA, Math.PI * 1.38 + tiltA);
+      ctx.stroke();
+    }
+    // uç parlaması
+    const fl = 0.6 + 0.4 * Math.sin(T * 7);
+    ctx.fillStyle = `rgba(255,255,255,${(0.75 * fl).toFixed(3)})`;
+    ctx.beginPath(); ctx.arc(tip.X, tip.Y, 2.6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = rgba(accent, 0.5 * fl);
+    ctx.beginPath(); ctx.arc(tip.X, tip.Y, 7 + 5 * fl, 0, Math.PI * 2); ctx.stroke();
+
+    // HUD yazıları
+    if (w > 560) {
+      ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+      ctx.fillStyle = 'rgba(255,255,255,0.35)';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('// ARES — İLERİ HAREKET', 28, h - 28);
+      ctx.textAlign = 'right';
+      const vel = (24.6 + Math.sin(T * 1.3) * 0.35).toFixed(2);
+      ctx.fillText('HIZ ' + vel + ' AU/S — ROTA SABİT', w - 28, h - 28);
+    }
+  };
+
+  let raf = 0;
+  const t0 = performance.now();
+  const hareketli = !reduced();
+  const loop = (now: number) => {
+    draw((now - t0) / 1000);
+    raf = requestAnimationFrame(loop);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        cancelAnimationFrame(raf);
+        if (e.isIntersecting && hareketli) raf = requestAnimationFrame(loop);
+      });
+    },
+    { threshold: 0.05 }
+  );
+  io.observe(cv);
+  const ro = new ResizeObserver(() => draw(hareketli ? (performance.now() - t0) / 1000 : 40));
+  ro.observe(cv.parentElement!);
+  draw(hareketli ? 0 : 40);
+  signal.addEventListener('abort', () => {
+    cancelAnimationFrame(raf);
+    io.disconnect();
+    ro.disconnect();
+  });
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -1281,6 +1472,7 @@ function initPage() {
   initInsaat(signal);
   initAkilliKent(signal);
   initTicaret(signal);
+  initMizrak(signal);
 
   if (reduced()) return; // hareket azaltmada içerik zaten görünür
 

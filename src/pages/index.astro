@@ -14,14 +14,7 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
 >
   <!-- HERO (yapışkan: sonraki içerik perde gibi üzerine kayar) -->
   <section class="hero hero--sticky" aria-labelledby="hero-baslik">
-    <div class="hero__glow" aria-hidden="true"></div>
-    <svg class="hero__arcs" viewBox="0 0 1200 800" aria-hidden="true" preserveAspectRatio="xMidYMax slice">
-      <circle cx="600" cy="820" r="240"></circle>
-      <circle cx="600" cy="820" r="380"></circle>
-      <circle cx="600" cy="820" r="520"></circle>
-      <circle cx="600" cy="820" r="660"></circle>
-      <circle cx="600" cy="820" r="800"></circle>
-    </svg>
+    <canvas class="stack__globe" data-gorsel="mizrak" aria-hidden="true"></canvas>
     <div class="container hero__inner">
       <h1 class="hero__title gs-hero" id="hero-baslik">
         Sermayeyi vizyonla,<br />vizyonu <em>kalıcı değerle</em><br />buluşturuyoruz.

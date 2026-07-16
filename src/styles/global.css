@@ -825,6 +825,10 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
 [data-gorsel="ticaret"] {
   background: #000623;
 }
+/* Hero mızrak görseli: koyu gece zemini */
+[data-gorsel="mizrak"] {
+  background: #060023;
+}
 
 /* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
 .zoom { position: relative; height: 240vh; }
