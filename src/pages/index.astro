@@ -112,6 +112,7 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
       {sektorler.map((s) => (
         <article class="stack__card grid-bg">
           <div class="stack__dim" aria-hidden="true"></div>
+          {s.slug === 'finans' && <canvas class="stack__globe" aria-hidden="true"></canvas>}
           <div class="container stack__inner">
             <div class="stack__left">
               <span class="stack__no" aria-hidden="true">{s.no}</span>
@@ -126,7 +127,9 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
                 Detaylı İncele<span class="btn__arrow">→</span>
               </span>
             </div>
-            <svg class="stack__icon" viewBox="0 0 48 48" aria-hidden="true" set:html={s.ikon} />
+            {s.slug !== 'finans' && (
+              <svg class="stack__icon" viewBox="0 0 48 48" aria-hidden="true" set:html={s.ikon} />
+            )}
           </div>
         </article>
       ))}

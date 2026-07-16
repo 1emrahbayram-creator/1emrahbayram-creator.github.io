@@ -409,6 +409,212 @@ function initZoom() {
   }
 }
 
+/* ---------- Küresel sermaye ağı küresi (finans kartı arka planı) ----------
+   Tasarım handoff'undaki canvas bileşeninin vanilla portu: dönen tel kafes
+   küre, İstanbul merkezli bağlantı yayları, akan ışık darbeleri ve etiketler. */
+function initGlobe(signal: AbortSignal) {
+  const cv = document.querySelector<HTMLCanvasElement>('.stack__globe');
+  if (!cv) return;
+  const accent = '#D8C39A';
+  const speed = 0.8;
+  const D2R = Math.PI / 180;
+  const tilt = 23 * D2R;
+
+  interface Merkez { n: string; la: number; lo: number; hub?: boolean; label?: string; }
+  const merkezler: Merkez[] = [
+    { n: 'İSTANBUL', la: 41, lo: 29, hub: true, label: 'MELEK YATIRIMCILIK' },
+    { n: 'LONDRA', la: 51.5, lo: 0, label: 'ŞİRKET EVLİLİKLERİ & ORTAKLIKLAR' },
+    { n: 'NEW YORK', la: 40.7, lo: -74, label: 'KÜRESEL FON YÖNETİMİ' },
+    { n: 'TOKYO', la: 35.7, lo: 139.7, label: 'YURT DIŞI BORSALAR' },
+    { n: 'DUBAİ', la: 25.2, lo: 55.3 },
+    { n: 'HONG KONG', la: 22.3, lo: 114.2 },
+    { n: 'FRANKFURT', la: 50.1, lo: 8.7 },
+  ];
+  const baglar: Array<[number, number]> = [[0, 1], [0, 2], [0, 3], [0, 4], [1, 2], [3, 5]];
+
+  const rgba = (hex: string, a: number) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${Math.max(0, Math.min(1, a)).toFixed(3)})`;
+  };
+
+  const draw = (t: number) => {
+    const parent = cv.parentElement;
+    if (!parent) return;
+    const box = parent.getBoundingClientRect();
+    const w = Math.max(1, box.width);
+    const h = Math.max(1, box.height);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr)) {
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const genis = w > 860;
+    const showLabels = w > 700;
+    const cx = w * (genis ? 0.66 : 0.5);
+    const cy = h / 2;
+    const R = Math.min(genis ? w * 0.5 : w, h) * 0.31;
+    const rot = t * 0.09 * speed;
+
+    const P = (la: number, lo: number) => {
+      const p = la * D2R, l = lo * D2R + rot;
+      const x = Math.cos(p) * Math.sin(l), y = Math.sin(p), z = Math.cos(p) * Math.cos(l);
+      const yt = y * Math.cos(tilt) - z * Math.sin(tilt);
+      const zt = y * Math.sin(tilt) + z * Math.cos(tilt);
+      return { X: cx + R * x, Y: cy - R * yt, z: zt, x, y, zz: z };
+    };
+
+    // dış kadran halkası + tik işaretleri
+    ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, R + 58, 0, Math.PI * 2); ctx.stroke();
+    for (let a = 0; a < 360; a += 5) {
+      const rad = a * D2R, uzun = a % 30 === 0;
+      const r1 = R + 58, r2 = r1 + (uzun ? 10 : 5);
+      ctx.strokeStyle = uzun ? 'rgba(255,255,255,0.20)' : 'rgba(255,255,255,0.08)';
+      ctx.beginPath();
+      ctx.moveTo(cx + r1 * Math.cos(rad), cy + r1 * Math.sin(rad));
+      ctx.lineTo(cx + r2 * Math.cos(rad), cy + r2 * Math.sin(rad));
+      ctx.stroke();
+    }
+    const oa = -t * 0.05 * speed;
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(cx + (R + 58) * Math.cos(oa), cy + (R + 58) * Math.sin(oa), 2, 0, Math.PI * 2); ctx.fill();
+
+    // küre dış hattı
+    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.stroke();
+
+    // tel kafes (derinliğe göre saydamlık)
+    type Nk = ReturnType<typeof P>;
+    const wire = (pts: Nk[], base: number) => {
+      for (let i = 1; i < pts.length; i++) {
+        const a = pts[i - 1], b = pts[i];
+        const zm = (a.z + b.z) / 2;
+        ctx.strokeStyle = `rgba(255,255,255,${(base * (0.22 + 0.78 * Math.max(0, zm))).toFixed(3)})`;
+        ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+      }
+    };
+    for (let la = -60; la <= 60; la += 30) {
+      const pts: Nk[] = [];
+      for (let lo = 0; lo <= 360; lo += 4) pts.push(P(la, lo));
+      wire(pts, 0.16);
+    }
+    for (let lo = 0; lo < 180; lo += 30) {
+      const pts: Nk[] = [];
+      for (let la = -90; la <= 90; la += 4) pts.push(P(la, lo));
+      for (let la = 90; la >= -90; la -= 4) pts.push(P(la, lo + 180));
+      wire(pts, 0.14);
+    }
+
+    const M = merkezler.map((m) => ({ ...m, ...P(m.la, m.lo) }));
+
+    // hub'dan bağlantı yayları + akan darbeler
+    const lerp3 = (m1: (typeof M)[0], m2: (typeof M)[0], u: number) => {
+      let x = m1.x + (m2.x - m1.x) * u;
+      let y = m1.y + (m2.y - m1.y) * u;
+      let z = m1.zz + (m2.zz - m1.zz) * u;
+      const n = Math.hypot(x, y, z) || 1;
+      const lift = 1 + 0.22 * Math.sin(Math.PI * u);
+      x = (x / n) * lift; y = (y / n) * lift; z = (z / n) * lift;
+      const yt = y * Math.cos(tilt) - z * Math.sin(tilt);
+      const zt = y * Math.sin(tilt) + z * Math.cos(tilt);
+      return { X: cx + R * x, Y: cy - R * yt, z: zt };
+    };
+    baglar.forEach((lk, i) => {
+      const a = M[lk[0]], b = M[lk[1]];
+      const pts = [] as Array<ReturnType<typeof lerp3>>;
+      for (let s = 0; s <= 40; s++) pts.push(lerp3(a, b, s / 40));
+      for (let s = 1; s < pts.length; s++) {
+        const zm = (pts[s - 1].z + pts[s].z) / 2;
+        if (zm < -0.15) continue;
+        ctx.strokeStyle = rgba(accent, 0.1 + 0.3 * Math.max(0, zm));
+        ctx.beginPath(); ctx.moveTo(pts[s - 1].X, pts[s - 1].Y); ctx.lineTo(pts[s].X, pts[s].Y); ctx.stroke();
+      }
+      const ph = (t * 0.12 * speed + i * 0.37) % 1;
+      const pp = lerp3(a, b, ph);
+      if (pp.z > -0.05) {
+        ctx.fillStyle = rgba(accent, 0.9);
+        ctx.beginPath(); ctx.arc(pp.X, pp.Y, 1.8, 0, Math.PI * 2); ctx.fill();
+      }
+    });
+
+    // düğümler
+    M.forEach((m) => {
+      const on = m.z > -0.05, al = on ? 0.95 : 0.25;
+      if (m.hub) {
+        const pulse = 5 + 3 * (0.5 + 0.5 * Math.sin(t * 2 * speed));
+        ctx.strokeStyle = rgba(accent, 0.5 * Math.max(0.2, m.z + 0.5));
+        ctx.beginPath(); ctx.arc(m.X, m.Y, pulse, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = rgba(accent, al);
+      } else {
+        ctx.fillStyle = `rgba(255,255,255,${on ? 0.85 : 0.2})`;
+      }
+      ctx.beginPath(); ctx.arc(m.X, m.Y, m.hub ? 3 : 2, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // etiketler ve kılavuz çizgileri
+    if (showLabels) {
+      ctx.font = '500 11px "JetBrains Mono Variable", monospace';
+      M.filter((m) => m.label).forEach((m) => {
+        const vis = Math.max(0, Math.min(1, (m.z + 0.15) * 2.2));
+        if (vis <= 0.02) return;
+        const dx = m.X - cx, dy = m.Y - cy, dn = Math.hypot(dx, dy) || 1;
+        const ex = m.X + (dx / dn) * 46, ey = m.Y + (dy / dn) * 46;
+        const sag = dx >= 0;
+        ctx.strokeStyle = `rgba(255,255,255,${(0.3 * vis).toFixed(3)})`;
+        ctx.beginPath(); ctx.moveTo(m.X, m.Y); ctx.lineTo(ex, ey); ctx.lineTo(ex + (sag ? 14 : -14), ey); ctx.stroke();
+        ctx.fillStyle = m.hub ? rgba(accent, vis) : `rgba(255,255,255,${(0.72 * vis).toFixed(3)})`;
+        ctx.textAlign = sag ? 'left' : 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(m.label!, ex + (sag ? 20 : -20), ey);
+        ctx.fillStyle = `rgba(255,255,255,${(0.35 * vis).toFixed(3)})`;
+        ctx.fillText(m.n, ex + (sag ? 20 : -20), ey + 15);
+      });
+    }
+
+    // köşe yazıları
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.30)';
+    ctx.fillText('// KÜRESEL SERMAYE AĞI', 28, h - 28);
+    ctx.textAlign = 'right';
+    ctx.fillText('41°N — 29°E', w - 28, h - 28);
+  };
+
+  let raf = 0;
+  const t0 = performance.now();
+  const hareketli = !reduced();
+  const loop = (now: number) => {
+    draw((now - t0) / 1000);
+    raf = requestAnimationFrame(loop);
+  };
+  // yalnızca kart görünürken animasyon çalışır
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        cancelAnimationFrame(raf);
+        if (e.isIntersecting && hareketli) raf = requestAnimationFrame(loop);
+      });
+    },
+    { threshold: 0.05 }
+  );
+  io.observe(cv);
+  const ro = new ResizeObserver(() => draw(hareketli ? (performance.now() - t0) / 1000 : 42));
+  ro.observe(cv.parentElement!);
+  document.fonts?.ready.then(() => draw(hareketli ? (performance.now() - t0) / 1000 : 42));
+  draw(hareketli ? 0 : 42);
+  signal.addEventListener('abort', () => {
+    cancelAnimationFrame(raf);
+    io.disconnect();
+    ro.disconnect();
+  });
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -417,6 +623,7 @@ function initPage() {
   initNav(signal);
   initTicker(signal);
   initForm(signal);
+  initGlobe(signal); // hareket azaltmada tek statik kare çizer
 
   if (reduced()) return; // hareket azaltmada içerik zaten görünür
 

@@ -805,6 +805,12 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   fill: none; stroke: var(--gold); stroke-width: 1.2;
   opacity: 0.45;
 }
+/* Finans kartı arka planı: küresel sermaye ağı küresi (canvas) */
+.stack__globe {
+  position: absolute; inset: 0; z-index: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
 
 /* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
 .zoom { position: relative; height: 240vh; }
@@ -1069,6 +1075,7 @@ a.istirak:hover .istirak__ad { color: var(--gold-bright); }
   .page-hero__no { opacity: 0.5; }
   .stack__inner { grid-template-columns: 1fr; }
   .stack__icon { display: none; }
+  .stack__globe { opacity: 0.5; }
   .istirakler__grid { grid-template-columns: repeat(2, 1fr); }
   /* Mobilde zoom bölümü sabitlenmez; normal akışta durur */
   .zoom { height: auto; }
