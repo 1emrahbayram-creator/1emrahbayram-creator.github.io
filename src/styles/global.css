@@ -811,6 +811,10 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   width: 100%; height: 100%;
   pointer-events: none;
 }
+/* Geliştirme görseli: tasarım handoff'undaki mor→koyu degrade zemin */
+[data-gorsel="insaat"] {
+  background: linear-gradient(180deg, #12005F, #28211a);
+}
 
 /* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
 .zoom { position: relative; height: 240vh; }
