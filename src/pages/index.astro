@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Ticker from '../components/Ticker.astro';
 import CTABand from '../components/CTABand.astro';
+import Istirakler from '../components/Istirakler.astro';
 import { sektorler } from '../data/sektorler';
 
 const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
@@ -169,6 +170,8 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
         </div>
       </div>
     </section>
+
+    <Istirakler />
 
     <CTABand />
   </div>

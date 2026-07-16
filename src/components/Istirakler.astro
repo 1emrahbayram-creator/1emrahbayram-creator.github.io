@@ -1,0 +1,40 @@
+---
+import { istirakler } from '../data/istirakler';
+---
+
+<section class="section istirakler" aria-labelledby="istirakler-baslik">
+  <div class="container">
+    <div class="section__head gs-reveal">
+      <h2 class="section__title" id="istirakler-baslik">İştirakler &amp; <em>grup şirketleri</em></h2>
+      <p class="section__lede">Farklı sektörlerdeki iştiraklerimizle birlikte değer üretiyoruz.</p>
+    </div>
+    <div class="istirakler__grid">
+      {
+        istirakler.map((i) =>
+          i.url ? (
+            <a class="card istirak gs-reveal" href={i.url} target="_blank" rel="noopener">
+              {i.logo ? (
+                <img class="istirak__logo" src={i.logo} alt={`${i.ad} logosu`} loading="lazy" />
+              ) : (
+                <span class="istirak__placeholder" aria-hidden="true">{i.ad}</span>
+              )}
+              <span class="istirak__ad">
+                {i.ad}
+                <span class="btn__arrow" aria-hidden="true">↗</span>
+              </span>
+            </a>
+          ) : (
+            <div class="card istirak gs-reveal">
+              {i.logo ? (
+                <img class="istirak__logo" src={i.logo} alt={`${i.ad} logosu`} loading="lazy" />
+              ) : (
+                <span class="istirak__placeholder" aria-hidden="true">{i.ad}</span>
+              )}
+              <span class="istirak__ad">{i.ad}</span>
+            </div>
+          )
+        )
+      }
+    </div>
+  </div>
+</section>

@@ -840,6 +840,47 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   will-change: clip-path;
 }
 
+/* ---------- İştirakler ---------- */
+.istirakler__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.istirak {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 1.4rem;
+  min-height: 200px;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+.istirak__logo {
+  height: 64px; width: auto; max-width: 82%;
+  object-fit: contain;
+  filter: grayscale(1) opacity(0.75);
+  transition: filter 0.3s;
+}
+.istirak:hover .istirak__logo { filter: grayscale(0) opacity(1); }
+.istirak__placeholder {
+  display: grid; place-items: center;
+  height: 64px; width: 100%;
+  padding-inline: 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--muted);
+}
+.istirak__ad {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+a.istirak:hover .istirak__ad { color: var(--gold-bright); }
+
 /* ---------- Form ---------- */
 .form { display: grid; gap: 1.1rem; text-align: left; max-width: 640px; }
 .form__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
@@ -1028,6 +1069,7 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   .page-hero__no { opacity: 0.5; }
   .stack__inner { grid-template-columns: 1fr; }
   .stack__icon { display: none; }
+  .istirakler__grid { grid-template-columns: repeat(2, 1fr); }
   /* Mobilde zoom bölümü sabitlenmez; normal akışta durur */
   .zoom { height: auto; }
   .zoom__pin { position: static; height: auto; overflow: visible; }
@@ -1036,7 +1078,7 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
 }
 
 @media (max-width: 560px) {
-  .process__grid, .values__grid, .stats, .form__row, .footer__grid { grid-template-columns: 1fr; }
+  .process__grid, .values__grid, .stats, .form__row, .footer__grid, .istirakler__grid { grid-template-columns: 1fr; }
   .hero { padding-top: 8rem; }
   .hero__actions .btn { width: 100%; }
   .stats__item { border-left: none; padding-inline: 0; }
