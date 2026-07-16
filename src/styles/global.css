@@ -815,6 +815,10 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
 [data-gorsel="insaat"] {
   background: linear-gradient(180deg, #12005F, #28211a);
 }
+/* Akıllı kent görseli: lacivert→koyu degrade zemin */
+[data-gorsel="kent"] {
+  background: linear-gradient(180deg, #000310, #28211a);
+}
 
 /* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
 .zoom { position: relative; height: 240vh; }

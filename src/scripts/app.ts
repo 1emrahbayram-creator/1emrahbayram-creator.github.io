@@ -821,6 +821,231 @@ function initInsaat(signal: AbortSignal) {
   });
 }
 
+/* ---------- Akıllı kent görseli (teknoloji kartı arka planı) ----------
+   Tasarım handoff'undaki şehir haritası bileşeninin vanilla portu:
+   sokak ızgarası, akan trafik, veri hub'ı, radar taraması ve yayın antenleri. */
+function initAkilliKent(signal: AbortSignal) {
+  const cv = document.querySelector<HTMLCanvasElement>('[data-gorsel="kent"]');
+  if (!cv) return;
+  const accent = '#D8C39A';
+  const speed = 1;
+
+  const rgba = (hex: string, a: number) => {
+    const n = parseInt(hex.slice(1), 16);
+    return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${Math.max(0, Math.min(1, a)).toFixed(3)})`;
+  };
+
+  const draw = (t: number) => {
+    const parent = cv.parentElement;
+    if (!parent) return;
+    const box = parent.getBoundingClientRect();
+    const w = Math.max(1, box.width);
+    const h = Math.max(1, box.height);
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    if (cv.width !== Math.round(w * dpr)) {
+      cv.width = Math.round(w * dpr);
+      cv.height = Math.round(h * dpr);
+    }
+    const ctx = cv.getContext('2d');
+    if (!ctx) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+
+    const genis = w > 860;
+    const showLabels = w > 700;
+    const S = Math.min(genis ? w * 0.5 : w, h) * 0.72;
+    const ox = (genis ? w * 0.64 : w / 2) - S / 2;
+    const oy = (h - S) / 2;
+    const M = (u: number, v: number) => ({ X: ox + u * S, Y: oy + v * S });
+    type Pt = ReturnType<typeof M>;
+
+    // düzensiz sokak ızgarası
+    const xs = [0, 0.16, 0.34, 0.5, 0.68, 0.84, 1];
+    const ys = [0, 0.18, 0.36, 0.55, 0.72, 0.88, 1];
+    ctx.lineWidth = 1;
+    xs.forEach((u) => {
+      const a = M(u, 0), b = M(u, 1);
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+    });
+    ys.forEach((v) => {
+      const a = M(0, v), b = M(1, v);
+      ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+      ctx.beginPath(); ctx.moveTo(a.X, a.Y); ctx.lineTo(b.X, b.Y); ctx.stroke();
+    });
+    // şehir adaları; bazıları "ışıklı"
+    const isikli = [[1, 1], [3, 2], [2, 4], [4, 3], [1, 3], [4, 0], [0, 2], [5, 4]];
+    for (let i = 0; i < xs.length - 1; i++) {
+      for (let j = 0; j < ys.length - 1; j++) {
+        const p = 0.012;
+        const a = M(xs[i] + p, ys[j] + p), b = M(xs[i + 1] - p, ys[j + 1] - p);
+        const acik = isikli.some((l) => l[0] === i && l[1] === j);
+        ctx.strokeStyle = `rgba(255,255,255,${acik ? 0.16 : 0.05})`;
+        ctx.strokeRect(a.X, a.Y, b.X - a.X, b.Y - a.Y);
+        if (acik) {
+          ctx.fillStyle = 'rgba(255,255,255,0.02)';
+          ctx.fillRect(a.X, a.Y, b.X - a.X, b.Y - a.Y);
+        }
+      }
+    }
+
+    // sokaklarda akan trafik darbeleri (L rotalar)
+    const rotalar: number[][][] = [
+      [[0.16, 0], [0.16, 0.55], [0.68, 0.55], [0.68, 1]],
+      [[0, 0.36], [0.5, 0.36], [0.5, 0.88], [1, 0.88]],
+      [[1, 0.18], [0.34, 0.18], [0.34, 0.72], [0, 0.72]],
+      [[0.84, 1], [0.84, 0.36], [0.16, 0.36]],
+      [[0, 0.55], [0.34, 0.55], [0.34, 0.18]],
+    ];
+    rotalar.forEach((r, ri) => {
+      const segs: number[] = [];
+      let total = 0;
+      for (let i = 1; i < r.length; i++) {
+        const L = Math.hypot(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]);
+        segs.push(L); total += L;
+      }
+      const ph = (t * 0.07 * speed + ri * 0.23) % 1;
+      let d = ph * total, k = 0;
+      while (k < segs.length && d > segs[k]) { d -= segs[k]; k++; }
+      if (k >= segs.length) k = segs.length - 1;
+      const u0 = r[k], u1 = r[k + 1], f = segs[k] ? d / segs[k] : 0;
+      const bas = M(u0[0] + (u1[0] - u0[0]) * f, u0[1] + (u1[1] - u0[1]) * f);
+      const geri = (bd: number): Pt | null => {
+        let dd = ph * total - bd;
+        if (dd < 0) return null;
+        let kk = 0, rem = dd;
+        while (kk < segs.length && rem > segs[kk]) { rem -= segs[kk]; kk++; }
+        if (kk >= segs.length) return null;
+        const a = r[kk], b = r[kk + 1], ff = segs[kk] ? rem / segs[kk] : 0;
+        return M(a[0] + (b[0] - a[0]) * ff, a[1] + (b[1] - a[1]) * ff);
+      };
+      let onceki = bas;
+      for (let q = 1; q <= 6; q++) {
+        const p = geri(q * 0.012);
+        if (!p) break;
+        ctx.strokeStyle = rgba(accent, 0.5 * (1 - q / 7));
+        ctx.beginPath(); ctx.moveTo(onceki.X, onceki.Y); ctx.lineTo(p.X, p.Y); ctx.stroke();
+        onceki = p;
+      }
+      ctx.fillStyle = rgba(accent, 0.95);
+      ctx.beginPath(); ctx.arc(bas.X, bas.Y, 2, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // kavşaklardaki sensörler
+    const sensorler = [[0.16, 0.18], [0.5, 0.55], [0.84, 0.36], [0.34, 0.72], [0.68, 0.18], [0.16, 0.88]];
+    sensorler.forEach((sn) => {
+      const p = M(sn[0], sn[1]);
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.beginPath(); ctx.arc(p.X, p.Y, 1.8, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // HUB: akıllı kent bilgi yönetimi — genişleyen veri halkaları
+    const hub = M(0.5, 0.55);
+    ctx.strokeStyle = rgba(accent, 0.8);
+    ctx.beginPath(); ctx.arc(hub.X, hub.Y, 5, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = rgba(accent, 0.9);
+    ctx.beginPath(); ctx.arc(hub.X, hub.Y, 2, 0, Math.PI * 2); ctx.fill();
+    for (let k = 0; k < 3; k++) {
+      const ph = (t * 0.22 * speed + k / 3) % 1;
+      ctx.strokeStyle = rgba(accent, 0.3 * (1 - ph));
+      ctx.beginPath(); ctx.arc(hub.X, hub.Y, 8 + ph * S * 0.13, 0, Math.PI * 2); ctx.stroke();
+    }
+    // hub → sensör kesikli veri bağlantıları
+    ctx.setLineDash([2, 5]);
+    sensorler.forEach((sn) => {
+      const p = M(sn[0], sn[1]);
+      ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+      ctx.beginPath(); ctx.moveTo(hub.X, hub.Y); ctx.lineTo(p.X, p.Y); ctx.stroke();
+    });
+    ctx.setLineDash([]);
+
+    // RADAR: trafik & güvenlik — dönen tarama
+    const rad = M(0.84, 0.18), rr = S * 0.11;
+    ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath(); ctx.arc(rad.X, rad.Y, rr, 0, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.beginPath(); ctx.arc(rad.X, rad.Y, rr * 0.6, 0, Math.PI * 2); ctx.stroke();
+    const sa = t * 0.9 * speed;
+    for (let q = 0; q < 18; q++) {
+      const a = sa - q * 0.035;
+      ctx.strokeStyle = rgba(accent, 0.35 * (1 - q / 18));
+      ctx.beginPath(); ctx.moveTo(rad.X, rad.Y);
+      ctx.lineTo(rad.X + rr * Math.cos(a), rad.Y + rr * Math.sin(a)); ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.beginPath(); ctx.arc(rad.X, rad.Y, 1.8, 0, Math.PI * 2); ctx.fill();
+    const bl = { X: rad.X + rr * 0.55 * Math.cos(1.1), Y: rad.Y + rr * 0.55 * Math.sin(1.1) };
+    const blA = Math.max(0, Math.cos((sa - 1.1) % (Math.PI * 2)));
+    ctx.fillStyle = rgba(accent, 0.9 * blA);
+    ctx.beginPath(); ctx.arc(bl.X, bl.Y, 2, 0, Math.PI * 2); ctx.fill();
+
+    // YAYIN: bilişim & medya — sinyal yayları
+    const bc = M(0.16, 0.72);
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.beginPath(); ctx.arc(bc.X, bc.Y, 2, 0, Math.PI * 2); ctx.fill();
+    for (let k = 1; k <= 3; k++) {
+      const ph = (t * 0.5 * speed + k * 0.33) % 1;
+      const al = 0.45 * (1 - ph) * Math.min(1, k);
+      ctx.strokeStyle = rgba(accent, al);
+      ctx.beginPath(); ctx.arc(bc.X, bc.Y, 6 + (k + ph) * 9, -Math.PI * 0.65, -Math.PI * 0.1); ctx.stroke();
+      ctx.beginPath(); ctx.arc(bc.X, bc.Y, 6 + (k + ph) * 9, Math.PI * 0.35, Math.PI * 0.9); ctx.stroke();
+    }
+
+    // etiketler
+    if (showLabels) {
+      ctx.font = '500 11px "JetBrains Mono Variable", monospace';
+      const yaz = (p: Pt, txt: string, alt: string, dx: number, dy: number) => {
+        const ex = p.X + dx, ey = p.Y + dy, sag = dx >= 0;
+        ctx.strokeStyle = 'rgba(255,255,255,0.30)';
+        ctx.beginPath(); ctx.moveTo(p.X, p.Y); ctx.lineTo(ex, ey); ctx.lineTo(ex + (sag ? 14 : -14), ey); ctx.stroke();
+        ctx.textAlign = sag ? 'left' : 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = rgba(accent, 0.95);
+        ctx.fillText(txt, ex + (sag ? 20 : -20), ey);
+        ctx.fillStyle = 'rgba(255,255,255,0.35)';
+        ctx.fillText(alt, ex + (sag ? 20 : -20), ey + 15);
+      };
+      yaz(hub, 'AKILLI KENT BİLGİ YÖNETİMİ', 'VERİ MERKEZİ · CANLI', 64, 52);
+      yaz({ X: rad.X + rr * 0.7, Y: rad.Y - rr * 0.7 }, 'TRAFİK & GÜVENLİK ÇÖZÜMLERİ', 'İZLEME AĞI · 7/24', 40, -34);
+      yaz(bc, 'BİLİŞİM & MEDYA', 'YAYIN ALTYAPISI', -52, 44);
+    }
+
+    // köşe yazıları
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '400 10px "JetBrains Mono Variable", monospace';
+    ctx.fillStyle = 'rgba(255,255,255,0.30)';
+    ctx.fillText('// ŞEHRİN DİJİTAL KATMANI', 28, h - 28);
+    ctx.textAlign = 'right';
+    ctx.fillText('AĞ DURUMU — CANLI', w - 28, h - 28);
+  };
+
+  let raf = 0;
+  const t0 = performance.now();
+  const hareketli = !reduced();
+  const loop = (now: number) => {
+    draw((now - t0) / 1000);
+    raf = requestAnimationFrame(loop);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        cancelAnimationFrame(raf);
+        if (e.isIntersecting && hareketli) raf = requestAnimationFrame(loop);
+      });
+    },
+    { threshold: 0.05 }
+  );
+  io.observe(cv);
+  const ro = new ResizeObserver(() => draw(hareketli ? (performance.now() - t0) / 1000 : 25));
+  ro.observe(cv.parentElement!);
+  draw(hareketli ? 0 : 25);
+  signal.addEventListener('abort', () => {
+    cancelAnimationFrame(raf);
+    io.disconnect();
+    ro.disconnect();
+  });
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -831,6 +1056,7 @@ function initPage() {
   initForm(signal);
   initGlobe(signal); // hareket azaltmada tek statik kare çizer
   initInsaat(signal);
+  initAkilliKent(signal);
 
   if (reduced()) return; // hareket azaltmada içerik zaten görünür
 
