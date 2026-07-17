@@ -829,6 +829,29 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
 [data-gorsel="mizrak"] {
   background: #060023;
 }
+/* Hero video arka planı (YouTube embed) + okunabilirlik örtüsü */
+.hero__video-wrap {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #060023;
+}
+.hero__yt {
+  position: absolute; top: 50%; left: 50%;
+  /* 16:9 videonun her viewport'u kaplaması için */
+  width: max(100%, calc(100svh * 1.7778));
+  height: max(100%, calc(100vw * 0.5625));
+  transform: translate(-50%, -50%);
+  border: 0;
+}
+.hero__ort {
+  position: absolute; inset: 0; z-index: 0;
+  background: linear-gradient(180deg,
+    rgba(6, 4, 16, 0.55) 0%,
+    rgba(6, 4, 16, 0.25) 40%,
+    rgba(10, 10, 10, 0.7) 100%);
+  pointer-events: none;
+}
 
 /* ---------- Zoom: sabitlenip büyüyen yaklaşım bölümü ---------- */
 .zoom { position: relative; height: 240vh; }

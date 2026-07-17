@@ -14,7 +14,16 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
 >
   <!-- HERO (yapışkan: sonraki içerik perde gibi üzerine kayar) -->
   <section class="hero hero--sticky" aria-labelledby="hero-baslik">
-    <canvas class="stack__globe" data-gorsel="mizrak" aria-hidden="true"></canvas>
+    <div class="hero__video-wrap" aria-hidden="true">
+      <iframe
+        class="hero__yt"
+        src="https://www.youtube-nocookie.com/embed/qTlUBaPTeaw?autoplay=1&mute=1&loop=1&playlist=qTlUBaPTeaw&controls=0&rel=0&playsinline=1&modestbranding=1&iv_load_policy=3&disablekb=1&enablejsapi=1"
+        title="Arka plan videosu"
+        allow="autoplay; encrypted-media"
+        tabindex="-1"
+        loading="lazy"></iframe>
+    </div>
+    <div class="hero__ort" aria-hidden="true"></div>
     <div class="container hero__inner">
       <h1 class="hero__title gs-hero" id="hero-baslik">
         Sermayeyi vizyonla,<br />vizyonu <em>kalıcı değerle</em><br />buluşturuyoruz.

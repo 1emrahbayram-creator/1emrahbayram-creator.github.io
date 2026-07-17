@@ -1460,6 +1460,37 @@ function initMizrak(signal: AbortSignal) {
   });
 }
 
+/* ---------- Hero arka plan videosu (YouTube embed) ----------
+   Hareket azaltmada video kaldırılır (statik zemin kalır); perde
+   hero'yu örtünce video duraklatılır, geri dönünce sürdürülür. */
+function initHeroVideo(signal: AbortSignal) {
+  const wrap = document.querySelector<HTMLElement>('.hero__video-wrap');
+  if (!wrap) return;
+  if (reduced()) {
+    wrap.remove();
+    return;
+  }
+  const iframe = wrap.querySelector<HTMLIFrameElement>('iframe');
+  if (!iframe) return;
+  const komut = (func: string) =>
+    iframe.contentWindow?.postMessage(JSON.stringify({ event: 'command', func, args: [] }), '*');
+  let durdu = false;
+  window.addEventListener(
+    'scroll',
+    () => {
+      const gecti = window.scrollY > window.innerHeight;
+      if (gecti && !durdu) {
+        komut('pauseVideo');
+        durdu = true;
+      } else if (!gecti && durdu) {
+        komut('playVideo');
+        durdu = false;
+      }
+    },
+    { passive: true, signal }
+  );
+}
+
 /* ---------- Yaşam döngüsü ---------- */
 function initPage() {
   ac = new AbortController();
@@ -1468,6 +1499,7 @@ function initPage() {
   initNav(signal);
   initTicker(signal);
   initForm(signal);
+  initHeroVideo(signal);
   initGlobe(signal); // hareket azaltmada tek statik kare çizer
   initInsaat(signal);
   initAkilliKent(signal);
