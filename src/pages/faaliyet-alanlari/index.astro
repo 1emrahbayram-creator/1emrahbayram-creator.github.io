@@ -7,7 +7,7 @@ import { sektorler } from '../../data/sektorler';
 
 <BaseLayout
   title="Faaliyet Alanları — Ares Holding"
-  description="Ares Holding'in dört ana iş kolu: finans ve sermaye piyasaları, gayrimenkul ve turizm, akıllı kent teknolojileri, uluslararası ticaret ve hukuk."
+  description="Ares Holding'in dört ana iş kolu: yatırım ve aracılık (Pek Yatırım), portföy yönetimi (Pek Portföy), bağımsız denetim (Bora Finansal), karton üretimi (Kartonsan)."
 >
   <PageHero
     eyebrow="Faaliyet Alanları"
@@ -22,7 +22,7 @@ import { sektorler } from '../../data/sektorler';
           <article class="card sector-card gs-reveal" data-tilt data-delay={String(i % 2)}>
             <div class="card__glare" aria-hidden="true"></div>
             <div class="sector-card__top">
-              <span class="sector-card__no">{s.no}</span>
+              <span class="sector-card__no">{s.no} · {s.firma}</span>
               <svg class="sector-card__icon" viewBox="0 0 48 48" aria-hidden="true" set:html={s.ikon} />
             </div>
             <h2 class="sector-card__title">

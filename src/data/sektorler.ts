@@ -8,6 +8,8 @@ export interface Sektor {
   no: string;
   title: string;
   kisaAd: string;
+  /** Bu alanı yürüten grup şirketi */
+  firma: string;
   ozet: string;
   metaAciklama: string;
   manset: string;
@@ -18,84 +20,88 @@ export interface Sektor {
 
 export const sektorler: Sektor[] = [
   {
-    slug: 'finans',
+    slug: 'yatirim',
     no: '01',
-    title: 'Finans & Sermaye Piyasaları',
-    kisaAd: 'Finans',
-    ozet: 'Küresel piyasalarda finansal kaynak yaratma, yapılandırma ve yatırım yönetimi.',
+    title: 'Yatırım & Aracılık Hizmetleri',
+    kisaAd: 'Yatırım',
+    firma: 'Pek Yatırım Menkul Değerler',
+    ozet: 'Sermaye piyasalarında alım-satım aracılığı, kurumsal finansman ve yatırım danışmanlığı.',
     metaAciklama:
-      'Ares Holding finans hizmetleri: küresel fon yönetimi, şirket birleşme ve satın almaları, melek yatırımcılık ve yurt dışı borsalarda stratejik operasyonlar.',
-    manset: 'Sermayeye <em>küresel ölçekte</em> yön veriyoruz.',
+      'Pek Yatırım Menkul Değerler ile sermaye piyasalarında alım-satım aracılığı, halka arz, kurumsal finansman ve yatırım danışmanlığı hizmetleri.',
+    manset: 'Sermaye piyasalarında <em>güvenilir aracılık</em>.',
     aciklama: [
-      'Ares Holding, deneyimli fon yöneticilerinden oluşan kadrosuyla küresel finans piyasalarında uçtan uca çözümler sunar. Offshore bankacılık, yurt dışı fonları, yatırımlar ve hedge fon süreçlerini tek merkezden takip ederiz.',
-      'Şirket satın almalarından ortaklık yapılarına, kredi çözümlerinden erken aşama girişim yatırımlarına kadar; her finansal kurguyu projeye özel tasarlar, hukuki ve finansal risk analizleriyle destekleriz.',
+      'Pek Yatırım Menkul Değerler çatısı altında; pay senedi alım-satım aracılığından kurumsal finansmana uzanan geniş bir yelpazede sermaye piyasası hizmetleri sunuyoruz.',
+      'Yerli ve yabancı yatırımcılara işlem platformları, halka arz süreçleri ve yatırım danışmanlığıyla uçtan uca eşlik ediyoruz.',
     ],
     hizmetler: [
-      { ad: 'Küresel Fon Yönetimi', detay: 'Offshore bankacılık, yurt dışı fonları, yatırımlar ve hedge fon süreçlerinin deneyimli fon yöneticileriyle takibi.' },
-      { ad: 'Şirket Evlilikleri & Ortaklıklar', detay: 'Şirket satın almaları, birleşmeler, ortaklık yapıları ve kredi çözümleri konusunda finansal kaynak danışmanlığı.' },
-      { ad: 'Melek Yatırımcılık', detay: 'Potansiyeli yüksek yeni nesil girişimlere ve projelere erken aşama sermaye desteği.' },
-      { ad: 'Yurt Dışı Borsalar', detay: 'Yabancı sermaye piyasalarında ürün geliştirme ve stratejik satın alma operasyonlarının yönetimi.' },
+      { ad: 'Alım-Satım Aracılığı', detay: 'Pay senedi ve sermaye piyasası araçlarında hızlı, güvenilir işlem aracılığı.' },
+      { ad: 'Kurumsal Finansman & Halka Arz', detay: 'Halka arz, borçlanma araçları ihracı ve şirket finansmanı süreçlerinin yönetimi.' },
+      { ad: 'Yatırım Danışmanlığı', detay: 'Yatırımcı profiline uygun strateji ve piyasa analizi desteği.' },
+      { ad: 'Yurt Dışı Piyasalar', detay: 'Küresel borsalara erişim ve uluslararası işlem olanakları.' },
     ],
     ikon: '<path d="M6 40h36M10 34V22m9 12V14m9 20V26m9 8V10" stroke-linecap="round"/>',
   },
   {
-    slug: 'gayrimenkul',
+    slug: 'portfoy',
     no: '02',
-    title: 'Gayrimenkul, İnşaat & Turizm',
-    kisaAd: 'Gayrimenkul',
-    ozet: 'Arsa temininden anahtar teslimine, tüm geliştirme süreçleri tek çatı altında.',
+    title: 'Portföy Yönetimi',
+    kisaAd: 'Portföy',
+    firma: 'Pek Portföy',
+    ozet: 'Kurumsal ve bireysel yatırımcılar için profesyonel portföy ve fon yönetimi.',
     metaAciklama:
-      'Ares Holding gayrimenkul hizmetleri: kentsel dönüşüm, büyük ölçekli bina ve altyapı projeleri, konut geliştirme ve turizm tesisi yatırımları tek çatı altında.',
-    manset: 'Şehirlere <em>kalıcı değer</em> inşa ediyoruz.',
+      'Pek Portföy ile yatırım fonları yönetimi, özel portföy yönetimi ve varlık dağılımı stratejileri; disiplinli ve şeffaf süreçlerle.',
+    manset: 'Birikimlere <em>profesyonel</em> yön.',
     aciklama: [
-      'Arsa temini, inşaat projelerinin yönetimi ve yeni konut projelerinin hayata geçirilmesine kadar tüm süreçleri kendi bünyemizde yürütürüz. Riskli yapıların yenilenmesinden büyük ölçekli altyapı projelerine uzanan geniş bir portföy yönetiyoruz.',
-      'Turizm sektörüne yönelik otel ve tesis yatırımlarıyla gayrimenkul portföyümüzü çeşitlendiriyor; her projede modern yaşam standartlarını ve sürdürülebilir değer üretimini esas alıyoruz.',
+      'Pek Portföy ile kurumsal ve bireysel yatırımcıların birikimlerini; risk profillerine uygun, disiplinli ve şeffaf stratejilerle yönetiyoruz.',
+      'Yatırım fonlarından özel portföy yönetimine, varlık dağılımından düzenli raporlamaya kadar tüm süreç profesyonel ekiplerce yürütülür.',
     ],
     hizmetler: [
-      { ad: 'Kentsel Dönüşüm', detay: 'Riskli yapıların yenilenmesi ve modern yaşam alanlarına dönüştürülmesi projeleri.' },
-      { ad: 'Bina & Altyapı Projeleri', detay: 'Büyük ölçekli inşaatların ve konut projelerinin geliştirme ve yönetim süreçleri.' },
-      { ad: 'Turizm Yatırımları', detay: 'Otel ve tesis yatırımlarıyla çeşitlendirilmiş gayrimenkul portföyü.' },
+      { ad: 'Yatırım Fonları Yönetimi', detay: 'Farklı risk ve getiri profillerine uygun fonların kurulması ve yönetimi.' },
+      { ad: 'Özel Portföy Yönetimi', detay: 'Yatırımcıya özel hedeflerle oluşturulan kişiselleştirilmiş portföy stratejileri.' },
+      { ad: 'Varlık Dağılımı Stratejileri', detay: 'Piyasa koşullarına göre dinamik varlık dağılımı ve risk yönetimi.' },
     ],
-    ikon: '<path d="M8 42V18l10-8 10 8v24M28 42V26l12-6v22M4 42h40M14 26h4m-4 8h4" stroke-linecap="round" stroke-linejoin="round"/>',
+    ikon: '<circle cx="24" cy="24" r="17"/><path d="M24 24V7M24 24l12 12M24 24h17" stroke-linecap="round"/>',
   },
   {
-    slug: 'teknoloji',
+    slug: 'denetim',
     no: '03',
-    title: 'Teknoloji & Akıllı Kent Sistemleri',
-    kisaAd: 'Teknoloji',
-    ozet: 'Şehirlerin dijital dönüşümünü hızlandıran altyapı ve bilişim yatırımları.',
+    title: 'Bağımsız Denetim & Danışmanlık',
+    kisaAd: 'Denetim',
+    firma: 'Bora Finansal',
+    ozet: 'Bağımsız denetim, finansal raporlama ve kurumsal danışmanlık hizmetleri.',
     metaAciklama:
-      'Ares Holding teknoloji yatırımları: akıllı kent bilgi yönetimi, trafik ve güvenlik çözümleri, internet altyapıları ile yeni nesil medya ve bilişim projeleri.',
-    manset: 'Geleceğin şehirlerini <em>bugünden</em> kuruyoruz.',
+      'Bora Finansal ile bağımsız denetim, finansal raporlama, vergi ve mevzuat danışmanlığı; işletmelere güven veren bağımsız bakış.',
+    manset: 'Finansal güvenin <em>bağımsız</em> teminatı.',
     aciklama: [
-      'Şehirlerin dijitalleşmesini sağlayan veri yönetim sistemlerine yatırım yapıyor; şehir içi trafik akışını ve asayişi optimize eden akıllı güvenlik ve trafik sistemleri geliştiriyoruz.',
-      'İnternet altyapıları, yeni nesil medya araçları ve bilişim teknolojileri sektöründeki projelere fon sağlayarak teknoloji ekosisteminin büyümesine katkıda bulunuyoruz.',
+      'Bora Finansal bünyesinde; bağımsız denetim, finansal raporlama ve kurumsal danışmanlık hizmetleriyle şirketlerin finansal güvenilirliğini güçlendiriyoruz.',
+      'Vergi ve mevzuat uyumundan iç kontrol süreçlerine kadar, işletmelere karar süreçlerinde güven veren bağımsız bir bakış sunuyoruz.',
     ],
     hizmetler: [
-      { ad: 'Akıllı Kent Bilgi Yönetimi', detay: 'Şehirlerin dijitalleşmesini sağlayan veri yönetim sistemlerine yatırım.' },
-      { ad: 'Trafik & Güvenlik Çözümleri', detay: 'Şehir içi trafik akışını ve asayişi optimize eden akıllı güvenlik ve trafik sistemleri.' },
-      { ad: 'Bilişim & Medya', detay: 'İnternet altyapıları, yeni nesil medya araçları ve bilişim teknolojisi projelerine fon sağlama.' },
+      { ad: 'Bağımsız Denetim', detay: 'Finansal tabloların ulusal ve uluslararası standartlara uygun denetimi.' },
+      { ad: 'Finansal Raporlama', detay: 'Güvenilir, karşılaştırılabilir ve mevzuata uyumlu raporlama süreçleri.' },
+      { ad: 'Vergi & Mevzuat Danışmanlığı', detay: 'Vergi planlaması, uyum ve güncel mevzuat takibi.' },
     ],
-    ikon: '<circle cx="24" cy="24" r="5"/><path d="M24 6v8m0 20v8M6 24h8m20 0h8M11 11l6 6m14 14 6 6M37 11l-6 6M17 31l-6 6" stroke-linecap="round"/>',
+    ikon: '<path d="M24 5 40 12v10c0 10-7.2 18-16 20.5C15.2 40 8 32 8 22V12Z" stroke-linejoin="round"/><path d="m17 24 5 5 9.5-11" stroke-linecap="round" stroke-linejoin="round"/>',
   },
   {
-    slug: 'ticaret',
+    slug: 'uretim',
     no: '04',
-    title: 'Uluslararası Ticaret & Hukuk',
-    kisaAd: 'Ticaret',
-    ozet: 'Küresel ticaret operasyonları ve hukuki güvence, tek elden.',
+    title: 'Karton & Ambalaj Üretimi',
+    kisaAd: 'Üretim',
+    firma: 'Kartonsan',
+    ozet: 'Kuşe karton üretiminde köklü sanayi birikimi ve sürdürülebilir üretim gücü.',
     metaAciklama:
-      'Ares Holding uluslararası ticaret hizmetleri: ithalat-ihracat operasyonları, sözleşme hukuku danışmanlığı ve finansal risk analizi ile güvenli küresel ticaret.',
-    manset: 'Sınırların ötesinde <em>güvenle</em> ticaret.',
+      'Kartonsan iştirakiyle kuşe karton üretimi, ambalaj çözümleri ve sürdürülebilir sanayi üretimi; köklü birikim, güçlü dağıtım ağı.',
+    manset: 'Sanayide <em>köklü</em> üretim gücü.',
     aciklama: [
-      'Farklı sektörlerde ihracat ve ithalat operasyonlarını uçtan uca yönetiyoruz. Küresel tedarik ağımız ve saha deneyimimizle iş ortaklarımızın uluslararası pazarlara güvenle açılmasını sağlıyoruz.',
-      'Uluslararası ticari anlaşmaların hukuki zeminini hazırlıyor, sözleşme hukuku danışmanlığı sunuyor ve finansal risk analizlerini tamamlayarak her operasyonu sağlam bir zemine oturtuyoruz.',
+      'Kartonsan iştirakimizle kuşe karton üretimindeki köklü sanayi birikimini grubumuza taşıyoruz.',
+      'Ambalaj sektörüne yönelik yüksek kaliteli karton çözümleri; sürdürülebilir üretim anlayışı ve güçlü dağıtım ağıyla buluşuyor.',
     ],
     hizmetler: [
-      { ad: 'İthalat & İhracat', detay: 'Farklı sektörlerde uçtan uca küresel ticaret operasyonları.' },
-      { ad: 'Sözleşme Hukuku Danışmanlığı', detay: 'Uluslararası ticari anlaşmaların hukuki zemini ve sözleşme danışmanlığı.' },
-      { ad: 'Finansal Risk Analizi', detay: 'Ticari operasyonlar öncesi kapsamlı finansal risk değerlendirmesi.' },
+      { ad: 'Kuşe Karton Üretimi', detay: 'Yüksek kaliteli kuşe karton üretiminde köklü sanayi deneyimi.' },
+      { ad: 'Ambalaj Çözümleri', detay: 'Farklı sektörlerin ihtiyaçlarına yönelik karton ve ambalaj uygulamaları.' },
+      { ad: 'Sürdürülebilir Üretim', detay: 'Çevreye duyarlı süreçler ve geri dönüştürülebilir malzeme odağı.' },
     ],
-    ikon: '<circle cx="24" cy="24" r="18"/><path d="M6 24h36M24 6c5 5 7.5 11 7.5 18S29 37 24 42c-5-5-7.5-11-7.5-18S19 11 24 6Z" stroke-linejoin="round"/>',
+    ikon: '<path d="M6 41V19l11 8v-8l11 8v-8l14 9v13H6Z" stroke-linejoin="round"/><path d="M34 19v-8h6v12" stroke-linejoin="round"/><path d="M12 34h4m6 0h4m6 0h4" stroke-linecap="round"/>',
   },
 ];

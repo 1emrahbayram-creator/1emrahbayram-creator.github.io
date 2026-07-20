@@ -13,10 +13,7 @@ const digerleri = sektorler.filter((s) => s.slug !== sektor.slug);
 
 // Anasayfa kartlarındaki canvas görsellerinin detay sayfası eşlemesi
 const gorselMap: Record<string, string> = {
-  finans: 'kure',
-  gayrimenkul: 'insaat',
-  teknoloji: 'kent',
-  ticaret: 'ticaret',
+  yatirim: 'kure',
 };
 ---
 
@@ -34,11 +31,13 @@ const gorselMap: Record<string, string> = {
       { href: '/faaliyet-alanlari/', label: 'Faaliyet Alanları' },
     ]}
   >
-    <canvas
-      slot="arka"
-      class="stack__globe"
-      data-gorsel={gorselMap[sektor.slug]}
-      aria-hidden="true"></canvas>
+    {gorselMap[sektor.slug] && (
+      <canvas
+        slot="arka"
+        class="stack__globe"
+        data-gorsel={gorselMap[sektor.slug]}
+        aria-hidden="true"></canvas>
+    )}
   </PageHero>
 
   <!-- AÇIKLAMA -->

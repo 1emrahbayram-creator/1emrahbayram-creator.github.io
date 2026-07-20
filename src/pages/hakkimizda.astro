@@ -3,19 +3,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
 import CTABand from '../components/CTABand.astro';
 import Istirakler from '../components/Istirakler.astro';
-import { sektorler } from '../data/sektorler';
-
-const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
 ---
 
 <BaseLayout
   title="Hakkımızda — Ares Holding"
-  description="Ares Holding A.Ş.; finans, gayrimenkul, teknoloji ve uluslararası ticaret alanlarında faaliyet gösteren İstanbul merkezli çok sektörlü yatırım grubudur."
+  description="Ares Holding A.Ş.; yatırım ve aracılık, portföy yönetimi, bağımsız denetim ve karton üretimi alanlarındaki grup şirketleriyle İstanbul merkezli yatırım grubudur."
 >
   <PageHero
     eyebrow="Hakkımızda"
-    title="Dört sektör, tek vizyon: <em>kalıcı değer</em>"
-    lede="Ares Holding A.Ş., küresel piyasalarda finansal kaynak yaratma, uluslararası ticaret ve teknolojik altyapı yatırımları üzerine odaklanmış İstanbul merkezli çok yönlü bir şirketler grubudur."
+    title="Dört şirket, tek vizyon: <em>kalıcı değer</em>"
+    lede="Ares Holding A.Ş.; Pek Yatırım Menkul Değerler, Pek Portföy, Bora Finansal ve Kartonsan'dan oluşan grup yapısıyla İstanbul merkezli, 21 yıllık deneyime sahip çok yönlü bir şirketler grubudur."
   />
 
   <!-- KURUMSAL PROFİL + İSTATİSTİK -->
@@ -27,14 +24,15 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
         </div>
         <div class="gs-reveal" data-delay="1">
           <p style="color: var(--muted);">
-            Arsa temininden proje yönetimine, offshore fon süreçlerinden şirket birleşmelerine kadar
-            tüm süreçleri kendi uzman kadromuzla yürütürüz; yatırımcılarımıza ve iş ortaklarımıza tek
-            çatı altında bütünleşik çözümler sunarız.
+            Sermaye piyasalarında aracılık ve portföy yönetiminden bağımsız denetime, karton
+            üretiminden ambalaj çözümlerine; tüm süreçleri grup şirketlerimizin uzman kadrolarıyla
+            yürütür, yatırımcılarımıza ve iş ortaklarımıza tek çatı altında bütünleşik çözümler
+            sunarız.
           </p>
           <p style="color: var(--muted); margin-top: 1.25rem;">
-            Finans ve sermaye piyasalarındaki derinliğimizi; gayrimenkul geliştirme, akıllı kent
-            teknolojileri ve uluslararası ticaretteki saha deneyimimizle birleştirerek her projeye
-            küresel erişim kazandırıyoruz.
+            Pek Yatırım Menkul Değerler ve Pek Portföy'ün sermaye piyasalarındaki derinliğini;
+            Bora Finansal'ın denetim disiplini ve Kartonsan'ın sanayi birikimiyle birleştirerek
+            her projeye 21 yıllık deneyimimizi taşıyoruz.
           </p>
         </div>
       </div>
@@ -44,8 +42,8 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
           <dd><span class="stats__num" data-count="4">4</span></dd>
         </div>
         <div class="stats__item">
-          <dt>Uzmanlık Alanı</dt>
-          <dd><span class="stats__num" data-count={String(uzmanlikSayisi)}>{uzmanlikSayisi}</span></dd>
+          <dt>Yıllık Deneyim</dt>
+          <dd><span class="stats__num" data-count="21">21</span></dd>
         </div>
         <div class="stats__item">
           <dt>Uzman Kadro</dt>
@@ -82,15 +80,15 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
             <path d="M5 20h30M20 5c4 4.5 6 9.5 6 15s-2 10.5-6 15c-4-4.5-6-9.5-6-15s2-10.5 6-15Z" stroke-linejoin="round"></path>
           </svg>
           <h3>Küresel Erişim</h3>
-          <p>Yurt dışı borsalar, offshore fonlar ve uluslararası ticaret ağlarına doğrudan erişim.</p>
+          <p>Yurt dışı piyasalara ve küresel yatırım ağlarına doğrudan erişim.</p>
         </div>
         <div class="card values__card gs-reveal" data-tilt data-delay="2">
           <div class="card__glare" aria-hidden="true"></div>
           <svg viewBox="0 0 40 40" aria-hidden="true">
             <path d="M20 6v28M8 12h24M12 12 7 22a5.5 5.5 0 0 0 10 0l-5-10Zm16 0-5 10a5.5 5.5 0 0 0 10 0l-5-10ZM14 34h12" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
-          <h3>Hukuki Güvence</h3>
-          <p>Sözleşme hukuku uzmanlığımızla her anlaşmanın hukuki zemini baştan sağlamdır.</p>
+          <h3>Denetim Disiplini</h3>
+          <p>Bağımsız denetim kültürüyle her adımda ölçülebilir ve doğrulanabilir güven.</p>
         </div>
         <div class="card values__card gs-reveal" data-tilt data-delay="3">
           <div class="card__glare" aria-hidden="true"></div>
@@ -101,7 +99,7 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
             <circle cx="27" cy="27" r="7"></circle>
           </svg>
           <h3>Sektörel Sinerji</h3>
-          <p>Finans, inşaat, teknoloji ve ticaret; birbirini büyüten entegre bir ekosistem.</p>
+          <p>Yatırım, portföy, denetim ve üretim; birbirini büyüten entegre bir ekosistem.</p>
         </div>
       </div>
     </div>
@@ -151,11 +149,7 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
           </p>
         </div>
         <div class="leadership__card gs-reveal" data-delay="1">
-          <p class="leadership__statement">
-            Yatırımı sermaye aktarmak olarak değil; ortak olduğumuz her projeye vizyon, disiplin ve
-            küresel erişim kazandırmak olarak görüyoruz.
-          </p>
-          <div class="leadership__person">
+          <div class="leadership__person" style="margin-top: 0;">
             <span class="leadership__avatar" aria-hidden="true">AVS</span>
             <div>
               <strong>Aydın Veli Serin</strong>

@@ -4,13 +4,11 @@ import Ticker from '../components/Ticker.astro';
 import CTABand from '../components/CTABand.astro';
 import Istirakler from '../components/Istirakler.astro';
 import { sektorler } from '../data/sektorler';
-
-const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
 ---
 
 <BaseLayout
   title="Ares Holding — Küresel Vizyonla Değer Üreten Yatırım Gücü"
-  description="Ares Holding A.Ş. — İstanbul merkezli yatırım grubu. Finans, gayrimenkul, akıllı kent teknolojileri ve uluslararası ticarette değer üretiyoruz."
+  description="Ares Holding A.Ş. — İstanbul merkezli yatırım grubu. Yatırım ve aracılık, portföy yönetimi, bağımsız denetim ve karton üretiminde değer üretiyoruz."
 >
   <!-- HERO (yapışkan: sonraki içerik perde gibi üzerine kayar) -->
   <section class="hero hero--sticky" aria-labelledby="hero-baslik">
@@ -29,9 +27,9 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
         Sermayeyi vizyonla,<br />vizyonu <em>kalıcı değerle</em><br />buluşturuyoruz.
       </h1>
       <p class="hero__sub gs-hero">
-        Ares Holding; finans ve sermaye piyasalarından gayrimenkul geliştirmeye, akıllı kent
-        teknolojilerinden uluslararası ticarete uzanan iş kollarıyla, büyümeye hazır projelerin
-        stratejik yatırım ortağıdır.
+        Ares Holding; yatırım ve aracılıktan portföy yönetimine, bağımsız denetimden karton
+        üretimine uzanan grup şirketleriyle, büyümeye hazır projelerin stratejik yatırım
+        ortağıdır.
       </p>
       <div class="hero__actions gs-hero">
         <a class="btn btn--gold" href="/faaliyet-alanlari/" data-magnetic>Faaliyet Alanlarımız</a>
@@ -40,8 +38,8 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
         </a>
       </div>
       <p class="hero__trust gs-hero">
-        Finans <span aria-hidden="true">•</span> Gayrimenkul <span aria-hidden="true">•</span>
-        Teknoloji <span aria-hidden="true">•</span> Uluslararası Ticaret
+        Pek Yatırım <span aria-hidden="true">•</span> Pek Portföy <span aria-hidden="true">•</span>
+        Bora Finansal <span aria-hidden="true">•</span> Kartonsan
       </p>
     </div>
     <p class="hero__scroll-hint" aria-hidden="true">Keşfet</p>
@@ -60,8 +58,9 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
               Tek çatı altında bütünleşik bir <em>değer zinciri</em>
             </h2>
             <p class="leadership__text">
-              Küresel piyasalarda finansal kaynak yaratma, uluslararası ticaret ve teknolojik altyapı
-              yatırımları üzerine odaklanmış çok yönlü bir şirketler grubuyuz.
+              Yatırım ve aracılıktan portföy yönetimine, bağımsız denetimden karton üretimine;
+              dört grup şirketimizle sermaye piyasalarını ve sanayiyi aynı çatı altında
+              buluşturuyor, 21 yıllık deneyimimizle kalıcı değer üretiyoruz.
             </p>
             <p class="leadership__text" style="margin-top: 1rem;">
               <a class="link-gold" href="/hakkimizda/">Kurumsal profilimizi inceleyin →</a>
@@ -73,8 +72,8 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
               <dd><span class="stats__num" data-count="4">4</span></dd>
             </div>
             <div class="stats__item">
-              <dt>Uzmanlık Alanı</dt>
-              <dd><span class="stats__num" data-count={String(uzmanlikSayisi)}>{uzmanlikSayisi}</span></dd>
+              <dt>Yıllık Deneyim</dt>
+              <dd><span class="stats__num" data-count="21">21</span></dd>
             </div>
             <div class="stats__item">
               <dt>Uzman Kadro</dt>
@@ -93,8 +92,8 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
     <section class="manifesto section--elev" aria-label="Vizyon manifestosu">
       <div class="container">
         <p class="manifesto__text" id="manifesto-metin">
-          Finansın gücünü, gayrimenkulün kalıcılığını, teknolojinin hızını ve küresel ticaretin
-          erişimini tek vizyonda birleştiriyor; sermayeyi <em>kalıcı değere</em> dönüştürüyoruz.
+          Yatırımın öngörüsünü, portföyün disiplinini, denetimin güvenini ve üretimin gücünü tek
+          vizyonda birleştiriyor; sermayeyi <em>kalıcı değere</em> dönüştürüyoruz.
         </p>
       </div>
     </section>
@@ -114,13 +113,11 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
       {sektorler.map((s) => (
         <article class="stack__card grid-bg">
           <div class="stack__dim" aria-hidden="true"></div>
-          {s.slug === 'finans' && <canvas class="stack__globe" data-gorsel="kure" aria-hidden="true"></canvas>}
-          {s.slug === 'gayrimenkul' && <canvas class="stack__globe" data-gorsel="insaat" aria-hidden="true"></canvas>}
-          {s.slug === 'teknoloji' && <canvas class="stack__globe" data-gorsel="kent" aria-hidden="true"></canvas>}
-          {s.slug === 'ticaret' && <canvas class="stack__globe" data-gorsel="ticaret" aria-hidden="true"></canvas>}
+          {s.slug === 'yatirim' && <canvas class="stack__globe" data-gorsel="kure" aria-hidden="true"></canvas>}
           <div class="container stack__inner">
             <div class="stack__left">
               <span class="stack__no" aria-hidden="true">{s.no}</span>
+              <span class="stack__firma">{s.firma}</span>
               <h3 class="stack__title">
                 <a class="sector-card__stretch" href={`/faaliyet-alanlari/${s.slug}/`}>{s.title}</a>
               </h3>
@@ -132,6 +129,9 @@ const uzmanlikSayisi = sektorler.reduce((t, s) => t + s.hizmetler.length, 0);
                 Detaylı İncele<span class="btn__arrow">→</span>
               </span>
             </div>
+            {s.slug !== 'yatirim' && (
+              <svg class="stack__icon" viewBox="0 0 48 48" aria-hidden="true" set:html={s.ikon} />
+            )}
           </div>
         </article>
       ))}

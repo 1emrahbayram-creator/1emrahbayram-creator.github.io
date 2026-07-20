@@ -763,6 +763,14 @@ html.has-cursor .cursor-ring { opacity: 0.65; }
   gap: clamp(2rem, 5vw, 5rem);
   will-change: transform;
 }
+.stack__firma {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem; font-weight: 500;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.9rem;
+}
 .stack__no {
   display: block;
   font-family: var(--font-display);
