@@ -1012,6 +1012,7 @@ a.istirak:hover .istirak__ad { color: var(--gold-bright); }
 
 /* ---------- Harita (İletişim) ---------- */
 .contact__map {
+  position: relative;
   margin-top: clamp(2rem, 4vw, 3rem);
   border: 1px solid var(--line-soft);
   border-radius: var(--radius);
@@ -1024,6 +1025,50 @@ a.istirak:hover .istirak__ad { color: var(--gold-bright); }
   border: 0;
   /* siteyle uyumlu monokrom koyu harita */
   filter: grayscale(1) invert(0.92) contrast(0.9);
+  /* statik görünüm: pin daima harita merkezindeki ofisi gösterir */
+  pointer-events: none;
+}
+/* Ares logolu konum pini */
+.map-pin {
+  position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -100%);
+  display: flex; flex-direction: column; align-items: center;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.55));
+}
+.map-pin__badge {
+  position: relative; z-index: 1;
+  display: grid; place-items: center;
+  width: 54px; height: 54px;
+  background: #0A0A0A;
+  border: 2px solid #D8C39A;
+  border-radius: 50%;
+}
+.map-pin__badge svg { width: 36px; height: 36px; }
+.map-pin__tail {
+  width: 0; height: 0;
+  margin-top: -2px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 13px solid #D8C39A;
+}
+.map-pin__pulse {
+  position: absolute; left: 50%; top: 27px;
+  width: 54px; height: 54px;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(216, 195, 154, 0.6);
+  border-radius: 50%;
+  animation: pinPulse 2.2s ease-out infinite;
+}
+@keyframes pinPulse {
+  from { width: 54px; height: 54px; opacity: 0.7; }
+  to { width: 120px; height: 120px; opacity: 0; }
+}
+/* Haritayı Google Haritalar'da açma düğmesi */
+.contact__map-ac {
+  position: absolute; right: 1rem; bottom: 1rem;
+  padding: 0.6rem 1.15rem;
+  font-size: 0.8125rem;
 }
 
 /* ---------- İştiraklerimiz sayfası ---------- */

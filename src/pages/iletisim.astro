@@ -80,6 +80,27 @@ import PageHero from '../components/PageHero.astro';
           loading="lazy"
           referrerpolicy="no-referrer-when-downgrade"
           allowfullscreen></iframe>
+        <!-- Ares logolu konum pini: embed sorgulanan konumu merkeze aldığından
+             harita statik tutulur ve pin daima doğru noktayı gösterir -->
+        <div class="map-pin" aria-hidden="true">
+          <span class="map-pin__pulse"></span>
+          <span class="map-pin__badge">
+            <svg viewBox="0 0 64 64">
+              <g transform="translate(13,21) scale(0.62)">
+                <path d="M37.7 0 H47.1 L56.5 52 H43.3 L39.6 16.9 22.6 52 H0 Z" fill="#F2F0EB"></path>
+                <polygon points="10.8,50.7 19.8,57.3 62.8,-0.7 53.8,-7.3" fill="#0A0A0A"></polygon>
+                <polygon points="-1.6,75.7 -0.6,76.5 56.4,3.1 52.2,-0.1" fill="#F2F0EB"></polygon>
+                <polygon points="67.8,-19.6 66.4,-8 56.5,-1.5 58,-13.2" fill="#F2F0EB"></polygon>
+              </g>
+            </svg>
+          </span>
+          <span class="map-pin__tail"></span>
+        </div>
+        <a
+          class="btn btn--gold contact__map-ac"
+          href="https://www.google.com/maps/search/?api=1&query=Yal%C4%B1%20Atak%C3%B6y%2C%20Atak%C3%B6y%202-5-6.%20K%C4%B1s%C4%B1m%2C%20Rauf%20Orbay%20Cd.%2C%2034158%20Bak%C4%B1rk%C3%B6y%2F%C4%B0stanbul"
+          target="_blank"
+          rel="noopener">Haritada Aç<span class="btn__arrow" aria-hidden="true">↗</span></a>
       </div>
     </div>
   </section>
