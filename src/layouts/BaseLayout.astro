@@ -46,7 +46,14 @@ const ogImage = new URL('/og-image.jpg', Astro.site);
         name: 'Ares Holding A.Ş.',
         url: 'https://www.aresholding.com.tr',
         logo: new URL('/favicon.svg', Astro.site).toString(),
-        address: { '@type': 'PostalAddress', streetAddress: 'Ataköy', addressLocality: 'Bakırköy / İstanbul', addressCountry: 'TR' },
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: 'Yalı Ataköy, Ataköy 2-5-6. Kısım, Rauf Orbay Cd. C Blok No: 4 İç Kapı No: 65',
+          addressLocality: 'Bakırköy',
+          addressRegion: 'İstanbul',
+          postalCode: '34158',
+          addressCountry: 'TR',
+        },
         description:
           'İstanbul merkezli yatırım grubu: yatırım ve aracılık, portföy yönetimi, teknoloji yatırımları ve karton üretimi alanlarında faaliyet gösteren grup şirketleri.',
       })}
