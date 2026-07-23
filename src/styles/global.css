@@ -1010,6 +1010,48 @@ a.istirak:hover .istirak__ad { color: var(--gold-bright); }
 .contact__item p, .contact__item a { color: var(--muted); font-size: 0.9875rem; }
 .contact__item a:hover { color: var(--gold-bright); }
 
+/* ---------- Harita (İletişim) ---------- */
+.contact__map {
+  margin-top: clamp(2rem, 4vw, 3rem);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.contact__map iframe {
+  display: block;
+  width: 100%;
+  height: 400px;
+  border: 0;
+  /* siteyle uyumlu monokrom koyu harita */
+  filter: grayscale(1) invert(0.92) contrast(0.9);
+}
+
+/* ---------- İştiraklerimiz sayfası ---------- */
+.istirak-list { display: grid; gap: 1.5rem; }
+.istirak-row {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  align-items: center;
+  gap: clamp(1.5rem, 3vw, 3rem);
+  padding: clamp(1.75rem, 3vw, 2.75rem);
+}
+.istirak-row__logo { display: grid; place-items: center; }
+.istirak-row__logo img {
+  height: 72px; width: auto; max-width: 100%;
+  object-fit: contain;
+  filter: grayscale(1) opacity(0.8);
+  transition: filter 0.3s;
+}
+.istirak-row:hover .istirak-row__logo img { filter: none; }
+.istirak-row__logo img[src$='.jpg'] { border-radius: 8px; }
+.istirak-row__body h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.3rem, 2vw, 1.6rem);
+  margin-bottom: 0.6rem;
+}
+.istirak-row__body p { color: var(--muted); margin-bottom: 1.4rem; max-width: 64ch; }
+
 /* ---------- Yasal sayfalar ---------- */
 .legal {
   max-width: 760px;
@@ -1130,6 +1172,8 @@ a.istirak:hover .istirak__ad { color: var(--gold-bright); }
   .stack__icon { display: none; }
   .stack__globe { opacity: 0.5; }
   .istirakler__grid { grid-template-columns: repeat(2, 1fr); }
+  .istirak-row { grid-template-columns: 1fr; }
+  .istirak-row__logo { justify-items: start; }
   /* Mobilde zoom bölümü sabitlenmez; normal akışta durur */
   .zoom { height: auto; }
   .zoom__pin { position: static; height: auto; overflow: visible; }

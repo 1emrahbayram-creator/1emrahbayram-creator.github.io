@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CTABand from '../components/CTABand.astro';
+import { istirakler } from '../data/istirakler';
+---
+
+<BaseLayout
+  title="İştiraklerimiz — Ares Holding"
+  description="Ares Holding grup şirketleri: Pek Yatırım Menkul Değerler, Pek Portföy, Bora Finansal Teknoloji Yatırım Hizmetleri ve Kartonsan hakkında bilgi ve resmî siteleri."
+>
+  <PageHero
+    eyebrow="İştiraklerimiz"
+    title="Grup şirketlerimizle <em>tanışın</em>"
+    lede="Dört iştirakimiz; sermaye piyasalarından teknolojiye ve sanayiye uzanan alanlarda kendi markalarıyla değer üretir."
+  />
+
+  <section class="section" aria-label="İştirak listesi">
+    <div class="container istirak-list">
+      {
+        istirakler.map((i, idx) => (
+          <article class="card istirak-row gs-reveal" data-delay={String(idx % 2)}>
+            <div class="istirak-row__logo">
+              {i.logo ? (
+                <img src={i.logo} alt={`${i.ad} logosu`} loading="lazy" />
+              ) : (
+                <span class="istirak__placeholder" aria-hidden="true">{i.ad}</span>
+              )}
+            </div>
+            <div class="istirak-row__body">
+              <h2>{i.tamAd ?? i.ad}</h2>
+              <p>{i.aciklama}</p>
+              {i.url && (
+                <a class="btn btn--ghost" href={i.url} target="_blank" rel="noopener">
+                  Web Sitesine Git<span class="btn__arrow" aria-hidden="true">↗</span>
+                </a>
+              )}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>
